@@ -51,6 +51,32 @@
       }
     ]
   },
+  "application-shell/application-shell-12": {
+    "light": [
+      {
+        "src": "/block-previews/application-shell--application-shell-12-light-480-75a1b76553.webp",
+        "width": 480,
+        "height": 300
+      },
+      {
+        "src": "/block-previews/application-shell--application-shell-12-light-960-a351bd9de3.webp",
+        "width": 960,
+        "height": 600
+      }
+    ],
+    "dark": [
+      {
+        "src": "/block-previews/application-shell--application-shell-12-dark-480-962bb0734e.webp",
+        "width": 480,
+        "height": 300
+      },
+      {
+        "src": "/block-previews/application-shell--application-shell-12-dark-960-c40bc8c285.webp",
+        "width": 960,
+        "height": 600
+      }
+    ]
+  },
   "application-shell/application-shell-2": {
     "light": [
       {

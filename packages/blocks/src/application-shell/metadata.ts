@@ -62,6 +62,13 @@ const additionalShells = [
       "A media discovery frame with global search, category navigation and a collapsible subscription list.",
     tags: ["media", "search", "subscriptions", "responsive"],
   },
+  {
+    number: 12,
+    layoutName: "Two-Tier Workspace",
+    description:
+      "A persistent module rail with contextual navigation, organization selection and mobile bottom navigation.",
+    tags: ["modules", "organization", "two-tier", "responsive"],
+  },
 ] as const;
 
 /** Component-free application shell registry data; source labels match the docs source map. */
@@ -104,6 +111,7 @@ export const applicationShellBlockMetadata = [
       `application-shell-${number}/index.ts`,
       `application-shell-${number}/preview.tsx`,
       "shared/shell-frame.tsx",
+      ...(number === 12 ? ["shared/shell-organization-switcher.tsx"] : []),
       ...(number === 11 ? ["shared/shell-search.tsx"] : []),
       ...(number >= 9 ? ["shared/shell-rail-links.tsx", "shared/shell-tiered-sidebar.tsx"] : []),
       "shared/types.ts",

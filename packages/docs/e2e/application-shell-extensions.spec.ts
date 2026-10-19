@@ -4,6 +4,7 @@ import { assertNoBlockingA11yViolations } from "./a11y-utils";
 const variants = [
   { number: 9, name: "IDE Workspace" },
   { number: 11, name: "Video Platform" },
+  { number: 12, name: "Two-Tier Workspace" },
 ];
 for (const variant of variants) {
   const route = `/blocks/application-shell/application-shell-${variant.number}`;
@@ -66,6 +67,21 @@ for (const variant of variants) {
       await expect(page.getByRole("button", { name: /Building a calmer workspace/ })).toBeVisible();
       await page.getByRole("button", { name: "Subscriptions", exact: true }).click();
       await expect(page.getByRole("link", { name: "Studio Notes", exact: true })).toBeHidden();
+    }
+    if (variant.number === 12) {
+      await page.getByRole("button", { name: "Switch organization: Kamod Studio" }).click();
+      await page.getByRole("menuitem", { name: /Research Lab/ }).click();
+      await expect(
+        page.getByRole("button", { name: "Switch organization: Research Lab" }),
+      ).toBeVisible();
+      await page
+        .getByRole("navigation", { name: "Workspace modules" })
+        .first()
+        .getByRole("link", { name: "Documents", exact: true })
+        .click();
+      await expect(page.locator("main")).toContainText("Documents");
+      await page.getByRole("button", { name: "New project", exact: true }).click();
+      await expect(page.locator("main")).toContainText("Project 4");
     }
     await page.setViewportSize({ width: 320, height: 900 });
     const trigger = page.getByRole("button", { name: "Toggle Sidebar", exact: true });
