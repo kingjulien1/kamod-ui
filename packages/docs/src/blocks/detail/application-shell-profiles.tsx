@@ -2,7 +2,10 @@ import { withBasePath } from "../../base-path";
 import { InlineCodeLink } from "../../docs/components/InlineCodeLink";
 import { workflowShellProfiles } from "./application-shell-workflow-profiles";
 
+import { extendedShellProfiles } from "./extended-shell-profiles";
+
 export const shellVariantGuides = {
+  ...extendedShellProfiles,
   ...workflowShellProfiles,
   "application-shell-2": {
     layout: "inset",
