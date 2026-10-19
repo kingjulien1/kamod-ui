@@ -13,7 +13,8 @@ describe("isolated application shell route", () => {
     it(`renders ${block.id} immediately on the server without article chrome or a loading boundary`, () => {
       const html = render(<ApplicationShellBlocksPreviewContent id={block.id} />);
       expect(html).toContain('data-slot="sidebar-wrapper"');
-      expect(html).toContain("Kamod UI");
+      expect(html).toContain("Kamod");
+      expect(html).toMatch(/<h1[\s>]/);
       expect(html).not.toContain("blocks-doc-body");
       expect(html).not.toContain("page-state-loading");
       expect(html).not.toContain("Block not found.");
