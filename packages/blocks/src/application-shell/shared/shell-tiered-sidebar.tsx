@@ -14,10 +14,11 @@ export function ShellTieredSidebar({
   onNavigate,
   onUserAction,
   heading,
+  showAccount = true,
 }: Pick<
   ApplicationShellFrameProps,
   "brand" | "navigationGroups" | "user" | "currentPath" | "onNavigate" | "onUserAction"
-> & { heading?: ComponentChildren }) {
+> & { heading?: ComponentChildren; showAccount?: boolean }) {
   const { isMobile, setOpenMobile } = useSidebar();
   const navigate: ApplicationShellNavigate = (destination, event) => {
     onNavigate?.(destination, event);
@@ -53,9 +54,11 @@ export function ShellTieredSidebar({
           onNavigate={navigate}
         />
       </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={user} onUserAction={onUserAction} />
-      </SidebarFooter>
+      {(showAccount || isMobile) && (
+        <SidebarFooter>
+          <NavUser user={user} onUserAction={onUserAction} />
+        </SidebarFooter>
+      )}
     </Sidebar>
   );
 }

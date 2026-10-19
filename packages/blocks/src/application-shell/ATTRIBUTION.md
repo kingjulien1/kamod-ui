@@ -29,3 +29,10 @@ Original Preact/Kamod composition informed by the public screenshot and feature
 description of [Application Shell11](https://www.shadcnblocks.com/block/application-shell11).
 No Pro source is included. Media metadata and channel names are fictional local
 fixtures; no playback, recommendation or subscription service is implemented.
+
+## Application Shell12 — Two-Tier Workspace
+
+Original Preact/Kamod composition informed by the public screenshot and feature
+description of [Application Shell12](https://www.shadcnblocks.com/block/application-shell12).
+No Pro source is included. Module and organization choices are app-owned; the
+preview uses local fictional workspaces without tenant authorization or requests.

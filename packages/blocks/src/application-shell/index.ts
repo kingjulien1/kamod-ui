@@ -22,4 +22,6 @@ export * from "./application-shell-9";
 export { ApplicationShell9Preview } from "./application-shell-9/preview";
 export * from "./application-shell-11";
 export { ApplicationShell11Preview } from "./application-shell-11/preview";
+export * from "./application-shell-12";
+export { ApplicationShell12Preview } from "./application-shell-12/preview";
 export { applicationShellBlocks } from "./registry";
