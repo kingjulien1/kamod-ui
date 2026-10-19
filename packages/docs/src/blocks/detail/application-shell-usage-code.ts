@@ -1,5 +1,6 @@
 import { actionShellUsage } from "./application-shell-action-example";
 import type { ShellVariantId } from "./application-shell-profiles";
+import { extendedShellProfiles } from "./extended-shell-profiles";
 import { shellThreeStarter } from "./ShellThreeQuickstart";
 
 /** Copyable consumer examples, typechecked against the complete source bundles. */
@@ -9,6 +10,8 @@ const workflowSlots: Record<string, string> = {
 };
 
 export function shellUsageCode(id: ShellVariantId) {
+  const extension = extendedShellProfiles[id as keyof typeof extendedShellProfiles];
+  if (extension) return extension.usage;
   if (id === "application-shell-8") return actionShellUsage;
   if (id === "application-shell-3") return shellThreeStarter;
   const number = id.split("-").at(-1);

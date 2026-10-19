@@ -1,5 +1,7 @@
 import type { ApplicationShellBlock } from "../application-shell-config";
 import { type ShellVariantId, shellVariantGuides } from "./application-shell-profiles";
+import { extendedShellProfiles } from "./extended-shell-profiles";
+import { createExtendedShellSections } from "./extended-shell-sections";
 import { shellProductionSection } from "./ShellProductionGuide";
 import { ShellThreeSetup, ShellThreeUsage } from "./ShellThreeQuickstart";
 import { ShellVariantAbout } from "./ShellVariantAbout";
@@ -16,6 +18,8 @@ export { shellUsageCode } from "./application-shell-usage-code";
 export function createShellVariantSections(
   block: ApplicationShellBlock,
 ): readonly BlockGuideSection[] {
+  const extension = extendedShellProfiles[block.id as keyof typeof extendedShellProfiles];
+  if (extension) return createExtendedShellSections(block, extension);
   const id = block.id as ShellVariantId;
   const profile = shellVariantGuides[id];
   return [

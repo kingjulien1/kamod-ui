@@ -48,6 +48,13 @@ const additionalShells = [
       "A workspace for long forms with a sticky action footer, save status and responsive grouped navigation.",
     tags: ["forms", "actions", "responsive"],
   },
+  {
+    number: 9,
+    layoutName: "IDE Workspace",
+    description:
+      "An editor workspace with a persistent activity rail, collapsible file explorer, scratch editor and toggleable output panel.",
+    tags: ["ide", "explorer", "output", "responsive"],
+  },
 ] as const;
 
 /** Component-free application shell registry data; source labels match the docs source map. */
@@ -83,13 +90,14 @@ export const applicationShellBlockMetadata = [
   ...additionalShells.map(({ number, ...profile }) => ({
     ...profile,
     id: `application-shell-${number}`,
-    title: `application-shell-0${number}`,
+    title: `application-shell-${String(number).padStart(2, "0")}`,
     category: "application-shell" as const,
     files: [
       `application-shell-${number}/application-shell-${number}.tsx`,
       `application-shell-${number}/index.ts`,
       `application-shell-${number}/preview.tsx`,
       "shared/shell-frame.tsx",
+      ...(number >= 9 ? ["shared/shell-rail-links.tsx", "shared/shell-tiered-sidebar.tsx"] : []),
       "shared/types.ts",
       "shared/shell-breadcrumbs.tsx",
       "shared/shell-navigation.tsx",
@@ -106,6 +114,9 @@ export const applicationShellBlockMetadata = [
     uiComponents: ["Sidebar", "Breadcrumb", "Button", "Dropdown", "Avatar", "Collapsible"],
     preview: { height: 860, fullWidth: true },
     installCommand: `@kamod-ch/blocks/application-shell/application-shell-${number}`,
-    sourceUrl: `https://github.com/kamod-ch/kamod-ui/tree/main/packages/blocks/src/application-shell/application-shell-${number}`,
+    sourceUrl:
+      number >= 9
+        ? `https://www.shadcnblocks.com/block/application-shell${number}`
+        : `https://github.com/kamod-ch/kamod-ui/tree/main/packages/blocks/src/application-shell/application-shell-${number}`,
   })),
 ] as const;

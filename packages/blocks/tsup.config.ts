@@ -13,6 +13,7 @@ export default defineConfig({
     "src/application-shell/application-shell-6/index.ts",
     "src/application-shell/application-shell-7/index.ts",
     "src/application-shell/application-shell-8/index.ts",
+    "src/application-shell/application-shell-9/index.ts",
     "src/shared/index.ts",
     "src/sidebar/index.ts",
     "src/login/index.ts",
