@@ -14,6 +14,7 @@ import { ApplicationShell8Preview } from "./application-shell-8/preview";
 import { ApplicationShell9Preview } from "./application-shell-9/preview";
 import { ApplicationShell11Preview } from "./application-shell-11/preview";
 import { ApplicationShell12Preview } from "./application-shell-12/preview";
+import { ApplicationShell13Preview } from "./application-shell-13/preview";
 import { applicationShellBlockMetadata } from "./metadata";
 
 /**
@@ -34,6 +35,7 @@ const previews = [
   ApplicationShell9Preview,
   ApplicationShell11Preview,
   ApplicationShell12Preview,
+  ApplicationShell13Preview,
 ];
 
 export const applicationShellBlocks = applicationShellBlockMetadata.map((block, index) => ({

@@ -5,6 +5,7 @@ const variants = [
   { number: 9, name: "IDE Workspace" },
   { number: 11, name: "Video Platform" },
   { number: 12, name: "Two-Tier Workspace" },
+  { number: 13, name: "Top Navigation Workspace" },
 ];
 for (const variant of variants) {
   const route = `/blocks/application-shell/application-shell-${variant.number}`;
@@ -30,6 +31,10 @@ for (const variant of variants) {
   test(`Shell ${variant.number}: responsive light and dark navigation`, async ({ page }) => {
     await page.goto(`${route}/preview`);
     await expect(page.locator("html")).toHaveClass(/pp-ready/);
+    if (variant.number === 13) {
+      await page.evaluate(() => document.documentElement.classList.remove("dark"));
+      await assertNoBlockingA11yViolations(page, "Application Shell 13 light appearance");
+    }
     for (const width of [320, 768, 1024, 1440]) {
       await page.setViewportSize({ width, height: 900 });
       for (const dark of [false, true]) {
@@ -82,6 +87,27 @@ for (const variant of variants) {
       await expect(page.locator("main")).toContainText("Documents");
       await page.getByRole("button", { name: "New project", exact: true }).click();
       await expect(page.locator("main")).toContainText("Project 4");
+    }
+    if (variant.number === 13) {
+      const projects = page.getByRole("button", { name: "Projects", exact: true });
+      await projects.focus();
+      await page.keyboard.press("ArrowDown");
+      await expect(page.getByRole("menuitem", { name: "Projects", exact: true })).toBeFocused();
+      await page.keyboard.press("Escape");
+      await expect(projects).toBeFocused();
+      await projects.click();
+      await page.getByRole("menuitem", { name: "Projects", exact: true }).click();
+      await expect(page.getByRole("heading", { level: 1 })).toHaveText("Projects");
+      await page
+        .getByRole("searchbox", { name: "Search workspace" })
+        .fill("no project has this name");
+      await expect(page.getByRole("heading", { name: "No matching projects" })).toBeVisible();
+      await page.getByRole("button", { name: "Clear search" }).click();
+      await page.getByRole("button", { name: "Switch organization: Kamod Studio" }).click();
+      await page.getByRole("menuitem", { name: "Research Lab", exact: true }).click();
+      await expect(
+        page.getByRole("button", { name: "Switch organization: Research Lab" }),
+      ).toBeVisible();
     }
     await page.setViewportSize({ width: 320, height: 900 });
     const trigger = page.getByRole("button", { name: "Toggle Sidebar", exact: true });

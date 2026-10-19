@@ -69,6 +69,13 @@ const additionalShells = [
       "A persistent module rail with contextual navigation, organization selection and mobile bottom navigation.",
     tags: ["modules", "organization", "two-tier", "responsive"],
   },
+  {
+    number: 13,
+    layoutName: "Top Navigation Workspace",
+    description:
+      "A content-first workspace with grouped top menus, search, organization switching and mobile quick navigation.",
+    tags: ["top-navigation", "menus", "organization", "responsive"],
+  },
 ] as const;
 
 /** Component-free application shell registry data; source labels match the docs source map. */
@@ -111,6 +118,13 @@ export const applicationShellBlockMetadata = [
       `application-shell-${number}/index.ts`,
       `application-shell-${number}/preview.tsx`,
       "shared/shell-frame.tsx",
+      ...(number === 13
+        ? [
+            "shared/shell-search.tsx",
+            "shared/shell-group-menus.tsx",
+            "shared/shell-organization-switcher.tsx",
+          ]
+        : []),
       ...(number === 12 ? ["shared/shell-organization-switcher.tsx"] : []),
       ...(number === 11 ? ["shared/shell-search.tsx"] : []),
       ...(number >= 9 ? ["shared/shell-rail-links.tsx", "shared/shell-tiered-sidebar.tsx"] : []),
