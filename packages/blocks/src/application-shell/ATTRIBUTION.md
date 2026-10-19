@@ -36,3 +36,11 @@ Original Preact/Kamod composition informed by the public screenshot and feature
 description of [Application Shell12](https://www.shadcnblocks.com/block/application-shell12).
 No Pro source is included. Module and organization choices are app-owned; the
 preview uses local fictional workspaces without tenant authorization or requests.
+
+## Application Shell13 — Top Navigation Workspace
+
+Original Preact/Kamod composition informed by the public screenshot and feature
+description of [Application Shell13](https://www.shadcnblocks.com/block/application-shell13).
+No Pro source is included. Grouped menus retain native destinations; mobile
+quick links share the same route model. Search and organization services are
+application-owned; preview records and notification feedback stay local.
