@@ -20,7 +20,9 @@ describe("About section source references", () => {
         resolve(blocksRoot, `src/application-shell/${id}/${id}.tsx`),
         "utf8",
       );
-      expect(source).toContain(`return <ShellFrame {...props} layout="${profile.layout}" />;`);
+      if (source.includes("ShellFrame"))
+        expect(source).toContain(`return <ShellFrame {...props} layout="${profile.layout}" />;`);
+      else expect(source).toContain(`data-application-shell="${profile.layout}"`);
     });
   }
   for (const block of blockCategories.sidebar.blocks) {
