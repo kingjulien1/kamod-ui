@@ -55,6 +55,13 @@ const additionalShells = [
       "An editor workspace with a persistent activity rail, collapsible file explorer, scratch editor and toggleable output panel.",
     tags: ["ide", "explorer", "output", "responsive"],
   },
+  {
+    number: 11,
+    layoutName: "Video Platform",
+    description:
+      "A media discovery frame with global search, category navigation and a collapsible subscription list.",
+    tags: ["media", "search", "subscriptions", "responsive"],
+  },
 ] as const;
 
 /** Component-free application shell registry data; source labels match the docs source map. */
@@ -97,6 +104,7 @@ export const applicationShellBlockMetadata = [
       `application-shell-${number}/index.ts`,
       `application-shell-${number}/preview.tsx`,
       "shared/shell-frame.tsx",
+      ...(number === 11 ? ["shared/shell-search.tsx"] : []),
       ...(number >= 9 ? ["shared/shell-rail-links.tsx", "shared/shell-tiered-sidebar.tsx"] : []),
       "shared/types.ts",
       "shared/shell-breadcrumbs.tsx",

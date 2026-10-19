@@ -22,3 +22,10 @@ description of [Application Shell9](https://www.shadcnblocks.com/block/applicati
 by Shadcnblocks. No Pro source was accessed or included. The file-tree adapter
 supports one folder level; the scratch editor and output are local demonstrations,
 not an embedded editor engine, filesystem, Git client or terminal.
+
+## Application Shell11 — Video Platform
+
+Original Preact/Kamod composition informed by the public screenshot and feature
+description of [Application Shell11](https://www.shadcnblocks.com/block/application-shell11).
+No Pro source is included. Media metadata and channel names are fictional local
+fixtures; no playback, recommendation or subscription service is implemented.
