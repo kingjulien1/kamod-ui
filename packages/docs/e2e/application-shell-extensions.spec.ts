@@ -1,7 +1,10 @@
 import { expect, test } from "@playwright/test";
 import { assertNoBlockingA11yViolations } from "./a11y-utils";
 
-const variants = [{ number: 9, name: "IDE Workspace" }];
+const variants = [
+  { number: 9, name: "IDE Workspace" },
+  { number: 11, name: "Video Platform" },
+];
 for (const variant of variants) {
   const route = `/blocks/application-shell/application-shell-${variant.number}`;
   test(`Shell ${variant.number}: complete guide and actual source showcase`, async ({ page }) => {
@@ -51,6 +54,18 @@ for (const variant of variants) {
       await expect(page.getByRole("region", { name: "Workspace output" })).toBeVisible();
       await page.getByRole("button", { name: "New file", exact: true }).click();
       await expect(page.getByRole("heading", { level: 1 })).toHaveText("draft-3.tsx");
+    }
+    if (variant.number === 11) {
+      await page
+        .getByRole("searchbox", { name: "Search videos" })
+        .fill("no matches for this query");
+      await page.getByRole("button", { name: "Submit search" }).click();
+      await expect(page.getByRole("heading", { name: "No matching sessions" })).toBeVisible();
+      await page.getByRole("button", { name: "Reset filters" }).click();
+      await page.getByRole("button", { name: "Design", exact: true }).click();
+      await expect(page.getByRole("button", { name: /Building a calmer workspace/ })).toBeVisible();
+      await page.getByRole("button", { name: "Subscriptions", exact: true }).click();
+      await expect(page.getByRole("link", { name: "Studio Notes", exact: true })).toBeHidden();
     }
     await page.setViewportSize({ width: 320, height: 900 });
     const trigger = page.getByRole("button", { name: "Toggle Sidebar", exact: true });
