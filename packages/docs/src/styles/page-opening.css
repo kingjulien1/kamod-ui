@@ -2,7 +2,7 @@
 .page-opening {
   --opening-ink: var(--foreground, var(--pp-preloader-accent, #171717));
   --opening-accent: var(--primary, var(--opening-ink));
-  --opening-detail: var(--secondary-accent, var(--opening-accent));
+  --opening-detail: var(--secondary-accent, var(--secondary, var(--opening-accent)));
   --opening-glow-source: color-mix(in oklch, var(--opening-accent) 60%, var(--opening-detail));
   /* Equal endpoints along the longer hue arc give theme-matched 120° and 240° rotations. */
   --opening-glow-third: color-mix(
@@ -50,28 +50,28 @@
   background:
     radial-gradient(
       ellipse 45% 44% at 0% 0%,
-      color-mix(in oklab, var(--opening-accent) 55%, transparent),
+      color-mix(in oklab, var(--opening-accent) 62%, transparent),
       transparent 100%
     ),
     radial-gradient(
       ellipse 34% 36% at 68% -3%,
-      color-mix(in oklab, var(--opening-detail) 50%, transparent),
+      color-mix(in oklab, var(--opening-detail) 57%, transparent),
       transparent 100%
     ),
     radial-gradient(
       ellipse 36% 28% at 92% 98%,
-      color-mix(in oklab, var(--opening-glow-third) 50%, transparent),
+      color-mix(in oklab, var(--opening-glow-third) 57%, transparent),
       transparent 100%
     ),
     radial-gradient(
       ellipse 13% 16% at 18% 100%,
-      color-mix(in oklab, var(--opening-glow-fourth) 60%, transparent),
+      color-mix(in oklab, var(--opening-glow-fourth) 65%, transparent),
       transparent 100%
     );
 }
 .page-opening::after {
   z-index: -1;
-  background: color-mix(in oklab, var(--background, var(--pp-preloader-bg, #fff)) 70%, transparent);
+  background: color-mix(in oklab, var(--background, var(--pp-preloader-bg, #fff)) 66%, transparent);
   -webkit-backdrop-filter: blur(2px);
   backdrop-filter: blur(2px);
 }
@@ -94,21 +94,13 @@
   align-items: center;
   gap: 0.65rem;
 }
-.page-opening a {
+.page-opening-topbar a {
   color: inherit;
   text-decoration: none;
 }
 .page-opening a:focus-visible {
   outline: 2px solid var(--ring, var(--opening-ink));
   outline-offset: 5px;
-}
-.page-opening .kamod-ui-logo-wordmark,
-.page-opening .kamod-ui-logo-product {
-  color: color-mix(in oklab, var(--opening-accent) 12%, var(--opening-ink));
-}
-.page-opening .kamod-ui-logo-dot {
-  background: color-mix(in oklab, var(--opening-accent) 60%, var(--opening-ink));
-  box-shadow: 0 0 0 3px color-mix(in oklab, var(--opening-accent) 7%, transparent);
 }
 .page-opening-main {
   display: flex;
@@ -148,7 +140,9 @@
   line-height: 1.5;
 }
 .page-opening-content .page-loading-label > span[aria-hidden="true"] {
-  color: var(--opening-quiet, var(--muted-foreground));
+  color: var(--opening-ink);
+  font-weight: 600;
+  opacity: 1;
 }
 .page-opening-content .page-loading-title {
   margin: 0;
@@ -303,8 +297,8 @@
 }
 .page-loading-rocket {
   position: absolute;
-  top: clamp(5rem, 20dvh, 15rem);
-  right: clamp(2rem, 21vw, 24rem);
+  top: clamp(6rem, 22dvh, 17rem);
+  right: clamp(4rem, 23vw, 32rem);
   pointer-events: none;
 }
 .page-opening .getting-started-flight {
@@ -329,8 +323,8 @@ html:not(.pp-ready) .page-opening--startup .getting-started-flight * {
 
 @media (max-width: 639px) {
   .page-loading-rocket {
-    top: 1.25rem;
-    right: max(1.5rem, 10vw);
+    top: 3.5rem;
+    right: max(1rem, 7vw);
   }
 }
 @media (max-height: 600px) {
@@ -365,8 +359,9 @@ html:not(.pp-ready) .page-opening--startup .getting-started-flight * {
     margin-top: 1rem;
   }
   .page-loading-rocket {
-    top: 0.5rem;
-    transform: scale(0.7);
+    top: 0;
+    right: max(1rem, 8vw);
+    transform: scale(0.4);
     transform-origin: top right;
   }
 }
@@ -381,5 +376,64 @@ html:not(.pp-ready) .page-opening--startup .getting-started-flight * {
   }
   .page-opening-content:not(.page-state-loading--compact) .page-state-skeleton {
     margin-top: 0;
+  }
+}
+
+/* Shared exception-page chrome stays independent of site CSS for first paint. */
+.page-exception-footer {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1.5rem;
+  flex-wrap: wrap;
+  width: min(100%, 80rem);
+  margin-inline: auto;
+  padding-block: clamp(0.75rem, 2dvh, 1.25rem);
+  color: color-mix(in oklab, var(--opening-ink) 60%, transparent);
+  font-size: 0.6875rem;
+  line-height: 1.6;
+}
+.page-exception-footer p {
+  margin: 0;
+}
+.page-exception-footer p:last-child {
+  margin-inline-start: auto;
+}
+.page-opening .page-exception-footer a {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.125rem;
+  color: color-mix(in oklab, var(--opening-ink) 76%, transparent);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in oklab, currentColor 45%, transparent);
+  text-underline-offset: 0.2em;
+}
+.page-exception-footer a svg {
+  flex: none;
+  width: 0.95em;
+  height: 0.95em;
+  transform: translateY(-0.1em);
+  stroke-width: 1.75;
+}
+.page-opening .page-exception-footer a:hover {
+  text-decoration-color: currentColor;
+}
+.page-opening .page-state-recovery {
+  width: min(100%, 64rem);
+  height: auto;
+  padding-inline: 0;
+  background: transparent;
+}
+@media (max-width: 639px) and (min-height: 480px) {
+  .page-state-shell--loading .page-opening-main,
+  .page-opening--startup .page-opening-main {
+    margin-block-start: 8.5rem;
+    padding-top: 1rem;
+  }
+  .page-loading-rocket {
+    top: 3rem;
+    transform: none;
   }
 }

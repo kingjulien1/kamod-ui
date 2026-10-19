@@ -1,5 +1,5 @@
 /** @vitest-environment jsdom */
-import { cleanup, render, within } from "@testing-library/preact";
+import { act, cleanup, render, waitFor, within } from "@testing-library/preact";
 import { afterEach, expect, it } from "vitest";
 import type { CodeReferenceHelp } from "../types";
 import { ReferenceRelated } from "./reference-related";
@@ -83,6 +83,37 @@ it("includes the verified main destination even when a supplied reading list omi
   expect(links[0]).toHaveAccessibleName("API reference");
 });
 
+it("excludes the primary destination from chapter highlighting even when a chapter shares its URL", () => {
+  const value: CodeReferenceHelp = {
+    ...reference,
+    sections: [
+      { title: "Overview", description: "Start here.", source: reference.docs },
+      { title: "Props", description: "Documented properties.", source: props },
+      { title: "Contract", description: "The complete declaration.", source: contract },
+    ],
+  };
+  const view = render(
+    <ReferenceRelated
+      reference={value}
+      links={[contract, { ...reference.source!, kind: "source" }, props]}
+      primary={reference.docs!.href}
+      highlightChapters
+    />,
+  );
+  const nav = view.getByRole("navigation", { name: "Related references" });
+  expect(nav).toHaveAttribute("data-highlight-chapters", "true");
+  const links = within(nav).getAllByRole("link");
+  expect(links.map((link) => link.getAttribute("href"))).toEqual([
+    reference.docs!.href,
+    props.href,
+    contract.href,
+    reference.source!.href,
+  ]);
+  expect(links[0]).toHaveAttribute("data-reference-primary", "true");
+  expect(links[0]).not.toHaveAttribute("data-reference-chapter");
+  expect([...nav.querySelectorAll("[data-reference-chapter]")]).toEqual([links[1], links[2]]);
+});
+
 it("uses the same source-first package destination when the caller supplies no presentation", () => {
   const value: CodeReferenceHelp = {
     ...reference,
@@ -136,4 +167,30 @@ it("does not manufacture a missing preferred destination or label a third-party 
   expect(view.container.querySelector("[data-reference-primary]")).toBeNull();
   expect(link.title).toContain("linked documentation");
   expect(link.title).not.toContain("official");
+});
+
+it("marks only the main link with a star and an accessible unclipped explanation", async () => {
+  const view = render(
+    <ReferenceRelated reference={reference} links={[contract]} primary={reference.docs!.href} />,
+  );
+  const main = view.getByRole("link", { name: "API reference" });
+  expect(main.firstElementChild).toHaveClass("code-reference-help-main-star");
+  expect(
+    view.getByRole("link", { name: "DialogProps" }).querySelector(".code-reference-help-main-star"),
+  ).toBeNull();
+  act(() => {
+    main.focus();
+  });
+  await waitFor(() =>
+    expect(document.querySelector('[role="tooltip"]')).toHaveTextContent(
+      "Main reference · start here",
+    ),
+  );
+  const hint = document.querySelector('[role="tooltip"]')!;
+  expect(hint).toHaveTextContent("Your starting point for Dialog");
+  expect(hint).toHaveTextContent(reference.docs!.href);
+  expect(view.container.contains(hint)).toBe(false);
+  expect(main).toHaveAttribute("aria-describedby", hint.id);
+  view.unmount();
+  expect(document.querySelector(".code-reference-resource-tooltip")).toBeNull();
 });

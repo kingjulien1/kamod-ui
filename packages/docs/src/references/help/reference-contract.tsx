@@ -1,4 +1,12 @@
-import { BracesIcon, CodeIcon, TerminalIcon } from "@kamod-ch/icons/lucide";
+import {
+  FileTypeIcon,
+  LightbulbIcon,
+  PanelsTopLeftIcon,
+  SlidersHorizontalIcon,
+  SquareTerminalIcon,
+  TablePropertiesIcon,
+  WrenchIcon,
+} from "@kamod-ch/icons/lucide";
 import type { CodeReferenceHelp, CodeReferenceHelpSection } from "../types";
 import { referenceKinds } from "./reference-kinds";
 import {
@@ -58,10 +66,25 @@ function fallbackSections(reference: CodeReferenceHelp): CodeReferenceHelpSectio
     : [];
 }
 
+export function referenceChapters(reference: CodeReferenceHelp) {
+  const sections = reference.sections?.filter(meaningfulSection);
+  return sections?.length ? sections : fallbackSections(reference);
+}
+
+function chapterIcon(section: CodeReferenceHelpSection) {
+  if (section.definitions) return FileTypeIcon;
+  if (section.fields || section.rows) return TablePropertiesIcon;
+  if (/config|environment|plugin/i.test(section.title)) return SlidersHorizontalIcon;
+  if (/install|setup|set up/i.test(section.title)) return WrenchIcon;
+  if (/concept|principle|basics/i.test(section.title)) return LightbulbIcon;
+  if (section.code?.language === "bash" || /cli|command/i.test(section.title))
+    return SquareTerminalIcon;
+  return PanelsTopLeftIcon;
+}
+
 /** Source-backed section data stays lazy, while lightweight page components preserve the real design. */
 export function ReferenceContract({ reference }: { reference: CodeReferenceHelp }) {
-  const sections = reference.sections?.filter(meaningfulSection);
-  const chapters = sections?.length ? sections : fallbackSections(reference);
+  const chapters = referenceChapters(reference);
   return (
     <>
       {chapters.map((section, index) => (
@@ -70,13 +93,7 @@ export function ReferenceContract({ reference }: { reference: CodeReferenceHelp 
           className={`code-reference-help-contract${section.definitions ? " code-reference-help-types" : ""}`}
           title={section.title}
           detail={section.detail}
-          Icon={
-            section.fields || section.definitions
-              ? BracesIcon
-              : section.code?.language === "bash"
-                ? TerminalIcon
-                : CodeIcon
-          }
+          Icon={chapterIcon(section)}
           source={section.source}
           name={reference.name}
           count={

@@ -106,13 +106,12 @@ for (const scheme of ["light", "dark"] as const) {
           )
           .toBe(false);
         const isPage = (await layout.getAttribute("data-reference-kind")) === "page";
-        const ink = await layout.evaluate((node) => getComputedStyle(node).color);
         const primary = card.locator(".code-reference-help-primary-link");
         const destination = (await primary.getAttribute("href"))!;
         const badge = card.locator(".code-reference-help-kind");
         const open = card.locator(".code-reference-help-open");
-        const main = card.locator("a.code-reference-help-kind-icon");
-        const title = card.locator("a.code-reference-help-title");
+        const main = card.locator(".code-reference-help-ready .code-reference-help-kind-icon");
+        const title = card.locator(".code-reference-help-ready .code-reference-help-title");
         await expect(card.locator("header [data-slot='badge']")).toHaveCount(1);
         if (!isPage) {
           await expect(badge).toHaveCSS(
@@ -157,8 +156,12 @@ for (const scheme of ["light", "dark"] as const) {
           await badge.evaluate((node) => getComputedStyle(node).color),
         );
         await expect(open.locator("svg")).toHaveCSS("width", "11px");
-        await expect(open.locator("svg")).toHaveCSS("stroke-width", "1.75px");
-        for (const link of [open, main, title]) {
+        await expect(open.locator("svg")).toHaveCSS("stroke-width", "2.5px");
+        await expect(card.locator("header a")).toHaveCount(1);
+        for (const link of [
+          card.locator(".code-reference-help-header-main"),
+          ...(isPage ? [] : [card.locator(".code-reference-help-origin-link")]),
+        ]) {
           await expect(link).toHaveAttribute("href", destination);
           await expect(link).toHaveAttribute("target", "_top");
         }
@@ -197,7 +200,7 @@ for (const scheme of ["light", "dark"] as const) {
           ).toHaveCount(0);
           const origin = card.locator(".code-reference-help-origin");
           const context = origin.locator(".code-reference-help-context");
-          await expect(origin.locator("a")).toHaveCount(0);
+          await expect(origin.locator("a.code-reference-help-origin-link")).toHaveCount(1);
           await expect(origin).toHaveCSS("border-bottom-width", "0px");
           await expect(origin.locator(".code-reference-help-location-detail")).toHaveCount(1);
           const factBox = (await fact.boundingBox())!;
@@ -258,8 +261,18 @@ for (const scheme of ["light", "dark"] as const) {
                 "href",
                 (await heading.locator("a").first().getAttribute("href"))!,
               );
-              await expect(source).toHaveCSS("color", ink);
-              await expect(source.locator("svg")).toHaveCount(2);
+              await expect(source).toHaveCSS(
+                "color",
+                await source.evaluate((node) => {
+                  const probe = document.createElement("span");
+                  probe.style.color = "var(--code-help-source-ink)";
+                  node.append(probe);
+                  const ink = getComputedStyle(probe).color;
+                  probe.remove();
+                  return ink;
+                }),
+              );
+              await expect(source.locator("svg")).toHaveCount(1);
               const sourceBox = (await source.boundingBox())!;
               const headingBox = (await heading
                 .locator(".code-reference-help-section-title")
@@ -362,7 +375,9 @@ for (const scheme of ["light", "dark"] as const) {
             "none",
           );
           await expect(link.locator(".code-reference-help-related-kind")).toContainText("/");
-          await expect(link.locator("svg")).toHaveCount(1);
+          await expect(link.locator("svg")).toHaveCount(
+            (await link.getAttribute("data-reference-primary")) === "true" ? 2 : 1,
+          );
         }
         const bounds = (await card.boundingBox())!;
         expect(bounds.x).toBeGreaterThanOrEqual(0);

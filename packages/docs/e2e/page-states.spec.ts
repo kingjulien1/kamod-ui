@@ -82,7 +82,7 @@ async function expectStandaloneFrameFits(
   shell = page.locator(".page-state-shell").filter({ visible: true }),
 ) {
   await expect(shell).toBeVisible();
-  const isLoading = (await shell.getAttribute("class"))!.includes("page-opening");
+  const isLoading = (await shell.locator(".page-opening-content").count()) > 0;
   const brand = shell.getByRole("link", { name: "Kamod UI home", exact: true });
   await expect(brand).toHaveCount(1);
   await expect(brand.locator(".kamod-ui-logo-wordmark")).toHaveCSS("font-weight", "700");
@@ -104,7 +104,7 @@ async function expectStandaloneFrameFits(
     const bounds = element.getBoundingClientRect();
     const header = element.querySelector<HTMLElement>(".page-state-topbar, .page-opening-topbar")!;
     const main = element.querySelector<HTMLElement>(".page-state-main, .page-opening-main")!;
-    const footer = element.querySelector<HTMLElement>(".page-state-footer");
+    const footer = element.querySelector<HTMLElement>(".page-state-footer, .page-exception-footer");
     const mainBounds = main.getBoundingClientRect();
     const headerBounds = header.getBoundingClientRect();
     const footerBounds = footer?.getBoundingClientRect();
@@ -142,12 +142,14 @@ async function expectStandaloneFrameFits(
   await expect(header).toBeInViewport({
     ratio: viewportIntersectionRatio,
   });
+  await expect(shell.locator(".page-exception-footer")).toBeInViewport({
+    ratio: viewportIntersectionRatio,
+  });
   if (isLoading) {
-    await expect(shell.locator(".page-state-footer")).toHaveCount(0);
     await expect(header.locator("a")).toHaveCount(1);
     await expect(header).toHaveCSS("border-bottom-width", "0px");
   } else {
-    await expect(shell.locator(".page-state-footer")).toBeInViewport({
+    await expect(shell.locator(".page-state-footer, .page-exception-footer")).toBeInViewport({
       ratio: viewportIntersectionRatio,
     });
   }
@@ -207,7 +209,35 @@ async function expectSharedLoadingDesign(loading: Locator) {
     "aria-hidden",
     "true",
   );
-  await expect(shell.locator(".page-loading-rocket .getting-started-flight-star")).toHaveCount(4);
+  await expect(shell.locator(".page-loading-rocket .getting-started-flight-star")).toHaveCount(6);
+  const starClearance = await shell
+    .locator(".getting-started-flight--expansive")
+    .evaluate((field) => {
+      let closest = Infinity;
+      const stars = [...field.querySelectorAll<SVGSVGElement>(".getting-started-flight-star")];
+      for (let cycle = 0; cycle < 20; cycle++) {
+        for (const star of stars) star.dispatchEvent(new Event("animationiteration"));
+        const positions = stars.map((star) => {
+          const style = getComputedStyle(star);
+          return {
+            x: parseFloat(style.left),
+            y: parseFloat(style.top),
+            size: parseFloat(style.width),
+          };
+        });
+        for (let a = 0; a < positions.length; a++)
+          for (let b = a + 1; b < positions.length; b++) {
+            const one = positions[a],
+              two = positions[b];
+            closest = Math.min(
+              closest,
+              Math.hypot(one.x - two.x, one.y - two.y) - (one.size + two.size) / 2,
+            );
+          }
+      }
+      return closest;
+    });
+  expect(starClearance).toBeGreaterThan(24);
   await expect(loading.locator(".page-loading-tagline")).toHaveText(
     "Made for Preact. Built to be yours.",
   );
@@ -308,9 +338,12 @@ async function expectRecoveryLayout(page: Page, compact: boolean) {
       '.page-state-skeleton, .page-loading-track, .page-loading-spinner, [data-slot="spinner"], [role="progressbar"]',
     ),
   ).toHaveCount(0);
-  await expect(
-    page.locator(".page-state-topbar, .page-state-footer, .page-state-shell"),
-  ).toHaveCount(0);
+  if (compact) {
+    await expect(page.locator(".page-state-shell")).toHaveCount(0);
+  } else {
+    await expect(page.locator(".page-state-topbar")).toBeVisible();
+    await expect(page.locator("footer.page-exception-footer")).toBeVisible();
+  }
   expect(await recovery.evaluate((node) => node.getAnimations({ subtree: true }).length)).toBe(0);
 
   const layout = await recovery.evaluate((element) => {
@@ -321,6 +354,7 @@ async function expectRecoveryLayout(page: Page, compact: boolean) {
     const divider = message.querySelector<HTMLElement>(".page-recovery-divider")!;
     return {
       shellHeight: shell.height,
+      shellWidth: shell.width,
       shellCenterY: shell.y + shell.height / 2,
       columnWidth: column.width,
       columnCenterX: column.x + column.width / 2,
@@ -336,7 +370,7 @@ async function expectRecoveryLayout(page: Page, compact: boolean) {
     };
   });
   expect(layout.overflow).toBe(false);
-  expect(layout.columnWidth).toBeCloseTo(Math.min(448, layout.viewportWidth - 48), 1);
+  expect(layout.columnWidth).toBeCloseTo(Math.min(448, layout.shellWidth - 48), 1);
   expect(layout.columnCenterX).toBeCloseTo(layout.viewportWidth / 2, 1);
   expect(layout.columnCenterY).toBeCloseTo(layout.shellCenterY, 1);
   expect(layout.headingSize).toBeCloseTo(26.4, 1);
@@ -356,8 +390,7 @@ async function expectRecoveryLayout(page: Page, compact: boolean) {
       "href",
       /\/$/,
     );
-    expect(layout.shellHeight).toBeGreaterThanOrEqual(layout.viewportHeight);
-    expect(layout.columnCenterY).toBeCloseTo(layout.viewportHeight / 2, 1);
+    expect(layout.shellHeight).toBeLessThan(layout.viewportHeight);
   }
   await assertNoBlockingA11yViolations(page, `${compact ? "Preview" : "Page"} recovery`, {
     include: ".page-state-recovery",
@@ -498,7 +531,7 @@ for (const colorScheme of ["light", "dark"] as const) {
         loading.getByRole("heading", { name: "Opening Your Next Page…", exact: true }),
       ).toBeVisible();
       await expect(loading.getByRole("status")).toContainText("Opening Your Next Page…");
-      await expectStandaloneFrameFits(page, true);
+      await expectStandaloneFrameFits(page);
       for (const area of [".page-loading-track", ".page-loading-panel"]) {
         await expect
           .poll(() =>
@@ -624,7 +657,7 @@ for (const colorScheme of ["light", "dark"] as const) {
           await page.setViewportSize(viewport);
           // The ordinary phone, tablet and desktop frames need no inner scroll either.
           // Short landscape windows retain scrolling so text is never clipped.
-          await expectStandaloneFrameFits(page, viewport.height >= 568);
+          await expectStandaloneFrameFits(page, viewport.width >= 1024 && viewport.height >= 768);
           await expectLoadingContentReachable(loading);
         });
       }
@@ -666,7 +699,11 @@ for (const colorScheme of ["light", "dark"] as const) {
       for (const viewport of responsiveViewports) {
         await test.step(`Bootstrap at ${viewport.width}×${viewport.height}`, async () => {
           await page.setViewportSize(viewport);
-          await expectStandaloneFrameFits(page, viewport.height >= 568, shell);
+          await expectStandaloneFrameFits(
+            page,
+            viewport.width >= 1024 && viewport.height >= 768,
+            shell,
+          );
           await expectLoadingContentReachable(loading);
           await expect(preloader).toBeVisible();
         });

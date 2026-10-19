@@ -1,3 +1,4 @@
+/** @jsxImportSource preact */
 import type { IconProps } from "@kamod-ch/icons";
 
 /** Original Kamod stone silhouettes fitted to the icon library's 24px canvas. */

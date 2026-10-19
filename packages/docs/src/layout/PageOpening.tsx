@@ -1,7 +1,7 @@
 /** @jsxImportSource preact */
-import { ZapIcon } from "@kamod-ch/icons/lucide";
-import Logo from "../../.preactpress/theme/Logo";
+import { KamodMarkIcon } from "../docs/components/brand/KamodMarkIcon";
 import { GettingStartedRocket } from "../docs/components/GettingStartedRocket";
+import { ExceptionPageFrame } from "./ExceptionPageFrame";
 
 /** Shared by first paint and route loading; no Vite environment or page registry dependency. */
 export function PageOpening({
@@ -16,8 +16,6 @@ export function PageOpening({
   // The startup overlay stays outside the app after readiness. Omit runtime landmarks/IDs
   // and its h1 so it cannot become a second page title or match route-state selectors.
   const Title = startup ? "p" : "h1";
-  const Main = startup ? "div" : "main";
-  const Header = startup ? "div" : "header";
   const content = (
     <section
       class={`page-opening-content${startup ? "" : " page-state-loading"}${compact ? " page-state-loading--compact" : ""}`}
@@ -34,7 +32,9 @@ export function PageOpening({
           <span class="page-loading-brand">
             <strong>Kamod</strong>
           </span>
-          <span aria-hidden="true">·</span>
+          <span class="page-loading-separator" aria-hidden="true">
+            /
+          </span>
           <span class="page-loading-caption">
             {compact
               ? "Preparing your interactive preview..."
@@ -87,7 +87,7 @@ export function PageOpening({
         </div>
         {!compact && (
           <p class="page-loading-tagline">
-            <ZapIcon size={14} stroke-width={1.5} aria-hidden="true" />
+            <KamodMarkIcon size="1em" aria-hidden="true" />
             Made for Preact. Built to be yours.
           </p>
         )}
@@ -96,24 +96,17 @@ export function PageOpening({
   );
   if (compact) return content;
   return (
-    <div
-      class={`page-opening${startup ? " page-opening--startup" : " page-state-shell page-state-shell--loading"}`}
+    <ExceptionPageFrame
+      base={base}
+      startup={startup}
+      class={startup ? "" : "page-state-shell--loading"}
+      decoration={
+        <div class="page-loading-rocket">
+          <GettingStartedRocket expansive animateArrival={false} />
+        </div>
+      }
     >
-      <Header class={`page-opening-topbar${startup ? "" : " page-state-topbar"}`}>
-        <a class="page-state-brand" href={base} aria-label="Kamod UI home">
-          <Logo base={base} />
-        </a>
-      </Header>
-      <div class="page-loading-rocket">
-        <GettingStartedRocket />
-      </div>
-      <Main
-        class={`page-opening-main${startup ? "" : " page-state-main"}`}
-        id={startup ? undefined : "content"}
-        tabIndex={startup ? undefined : -1}
-      >
-        {content}
-      </Main>
-    </div>
+      {content}
+    </ExceptionPageFrame>
   );
 }

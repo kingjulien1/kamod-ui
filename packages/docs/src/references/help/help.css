@@ -15,6 +15,7 @@
   --code-help-muted: color-mix(in oklab, var(--docs-inline-code-background) 85%, transparent);
   --code-help-quiet: color-mix(in oklab, var(--docs-inline-code-background) 70%, transparent);
   --code-help-postscript: var(--code-help-muted);
+  --code-help-source-ink: color-mix(in oklab, var(--secondary) 20%, var(--background));
   --code-help-rule: color-mix(in oklab, var(--background) 12%, transparent);
   --code-help-surface: color-mix(in oklab, var(--background) 4%, transparent);
   --code-help-action-size: 1.375rem;
@@ -91,7 +92,33 @@
   margin: 0 -0.875rem -0.75rem;
   padding: 0.75rem 0.875rem;
   border-top: 1px solid var(--code-help-rule);
-  background: transparent;
+  --code-help-pattern: color-mix(in oklab, var(--primary) 50%, var(--code-help-action-ink));
+  background-color: var(--foreground);
+  background-image:
+    linear-gradient(
+      color-mix(in oklab, var(--foreground) 72%, transparent),
+      color-mix(in oklab, var(--foreground) 72%, transparent)
+    ),
+    radial-gradient(
+      circle,
+      color-mix(in oklab, var(--code-help-pattern) 30%, transparent) 1.1px,
+      transparent 1.45px
+    ),
+    linear-gradient(
+      color-mix(in oklab, var(--code-help-pattern) 12%, transparent) 1.25px,
+      transparent 0
+    ),
+    linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--code-help-pattern) 12%, transparent) 1.25px,
+      transparent 0
+    );
+  background-size:
+    auto,
+    16px 16px,
+    64px 64px,
+    64px 64px;
+  background-position: center;
 }
 /* Badge and chips share page paint; the compact badge has slightly softer corners. */
 .code-reference-help
@@ -122,12 +149,25 @@
 .code-reference-help-panel {
   position: relative;
   min-width: 0;
-  overflow: hidden;
+  overflow-x: auto;
   padding: 0;
   border: 0;
   border-radius: 0.5rem;
   background: var(--background);
   color: var(--foreground);
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+}
+.code-reference-help-panel > .code-reference-help-miniature {
+  min-width: 22rem;
+}
+/* Tight highlights follow each sentence's own type size, never the context-row size. */
+.code-reference-help
+  :is(.code-reference-help-summary p, .code-reference-help-section-copy, .code-reference-help-facts)
+  code {
+  padding: 0 0.125em;
+  font-size: 0.94em;
+  line-height: inherit;
 }
 .code-reference-help-section {
   display: grid;
@@ -176,7 +216,7 @@
   gap: 0.1875rem;
   flex: none;
   white-space: nowrap;
-  color: var(--background);
+  color: var(--code-help-source-ink);
   font-size: var(--code-help-font-min);
   line-height: 1.6;
   text-decoration: none;
@@ -231,7 +271,7 @@
   --kamod-code-font-size: var(--code-help-font-min);
   --kamod-code-line-height: 1.65;
   min-width: 0;
-  overflow: hidden;
+  overflow-x: auto;
   border-radius: 0.375rem;
   background: var(--background);
   color: var(--foreground);
@@ -332,8 +372,8 @@
   font-size: inherit;
   font-weight: 400;
   line-height: 1.65;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
+  white-space: pre;
+  overflow-wrap: normal;
   tab-size: 2;
 }
 .code-reference-help .code-reference-help-miniature code.code-reference-help-syntax {
@@ -437,7 +477,7 @@
 }
 .code-reference-help-excerpt {
   min-width: 0;
-  overflow: hidden;
+  overflow-x: auto;
   border-radius: 0.375rem;
   background: var(--background);
   color: var(--foreground);

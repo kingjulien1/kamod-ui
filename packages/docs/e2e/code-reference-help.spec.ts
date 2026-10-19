@@ -174,7 +174,7 @@ for (const motion of ["no-preference", "reduce"] as const) {
       await expect(term).toBeFocused();
       expect(await card.evaluate((node, before) => node === before, original)).toBe(true);
       await original?.dispose();
-      const main = card.locator(".code-reference-help-ready a.code-reference-help-kind-icon");
+      const main = card.locator(".code-reference-help-ready .code-reference-help-kind-icon");
       const loadedIcon = (await main.boundingBox())!;
       expect(loadedIcon.width).toBeCloseTo(iconBox.width, 1);
       expect(loadedIcon.height).toBeCloseTo(iconBox.height, 1);
@@ -190,7 +190,7 @@ for (const motion of ["no-preference", "reduce"] as const) {
       expect(bounds.y + bounds.height).toBeLessThanOrEqual(page.viewportSize()!.height + 1);
       await expect(pending).toBeHidden();
       await page.keyboard.press("Tab");
-      await expect(main).toBeFocused();
+      await expect(card.locator(".code-reference-help-header-main")).toBeFocused();
       await page.keyboard.press("Enter");
       await expect(page).toHaveURL(/\/docs\/direction\/installation\/?#api-reference$/);
       await expect(card).toHaveCount(0);

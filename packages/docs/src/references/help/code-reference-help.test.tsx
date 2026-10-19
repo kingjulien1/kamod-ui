@@ -1,6 +1,5 @@
 /** @vitest-environment jsdom */
-import { CircuitBoardIcon, ExternalLinkIcon } from "@kamod-ch/icons/lucide";
-import { BrandReactIcon, BrandTailwindIcon } from "@kamod-ch/icons/tabler/outline";
+import { CircuitBoardIcon, ExternalLinkIcon, LinkIcon } from "@kamod-ch/icons/lucide";
 import { cleanup, fireEvent, render, waitFor, within } from "@testing-library/preact";
 import renderToString from "preact-render-to-string";
 import { afterEach, expect, it, vi } from "vitest";
@@ -48,11 +47,12 @@ it("preserves exact copyable origins, linked headings and top-frame navigation",
   expect(
     getByRole("link", { name: "View DirectionProvider reference", exact: true }),
   ).toHaveAttribute("href", reference.docs!.href);
-  expect(container.querySelector("a.code-reference-help-title")).toHaveAttribute(
+  expect(container.querySelector(".code-reference-help-title")?.closest("a")).toHaveAttribute(
     "href",
     reference.docs!.href,
   );
-  expect(path.closest("a")).toBeNull();
+  expect(path.closest("a")).toHaveAttribute("href", reference.docs!.href);
+  expect(container.querySelector("a a")).toBeNull();
   expect(
     container.querySelector(".code-reference-help-origin > .code-reference-help-location-detail"),
   ).toHaveTextContent("Required: dir");
@@ -211,7 +211,7 @@ it("keeps a subpath's source note separate from the package's main destination",
     source.href,
   );
   expect(within(notice).getByRole("link")).toHaveAttribute("target", "_top");
-  for (const selector of [".code-reference-help-open", ".code-reference-help-primary-link"])
+  for (const selector of [".code-reference-help-header-main", ".code-reference-help-primary-link"])
     expect(container.querySelector(selector)).toHaveAttribute("href", repository);
 });
 
@@ -220,10 +220,11 @@ it("uses a single badge, short origin context, and one ending index for all veri
   const header = container.querySelector("header")!;
   expect(header.querySelectorAll('[data-slot="badge"]')).toHaveLength(1);
   expect(
-    within(header).getByRole("link", { name: "Open API reference for DirectionProvider" }),
+    within(header).getByRole("link", { name: "View DirectionProvider reference" }),
   ).toHaveAttribute("href", reference.docs!.href);
   const origin = container.querySelector(".code-reference-help-origin")!;
-  expect(origin.querySelectorAll("a")).toHaveLength(0);
+  expect(origin.querySelectorAll("a")).toHaveLength(1);
+  expect(origin.querySelector("a")).toHaveAttribute("href", reference.docs!.href);
   expect(origin.querySelector(".code-reference-help-context")).toHaveTextContent(
     "Layout direction",
   );
@@ -265,9 +266,8 @@ it("keeps exact package source primary while retaining its local integration des
   };
   const { container } = render(<CodeReferenceHelpContent reference={value} />);
   for (const selector of [
-    ".code-reference-help-open",
-    "a.code-reference-help-kind-icon",
-    "a.code-reference-help-title",
+    ".code-reference-help-header-main",
+    ".code-reference-help-origin-link",
     ".code-reference-help-primary-link",
   ])
     expect(container.querySelector(selector)).toHaveAttribute("href", value.source!.href);
@@ -375,7 +375,7 @@ it("keeps chapter source links in their headings with a separate compact continu
       "href",
       reference.docs!.href,
     );
-    expect(heading.querySelectorAll(".code-reference-help-section-source svg")).toHaveLength(2);
+    expect(heading.querySelectorAll(".code-reference-help-section-source svg")).toHaveLength(1);
     expect(section.querySelector(".code-reference-help-section-note a")).toHaveAttribute(
       "href",
       reference.docs!.href,
@@ -452,9 +452,9 @@ it("keeps every verified destination in one flat ending, with the chosen referen
   const links = [...container.querySelectorAll(".code-reference-help-related-link")];
   const destinations = [
     reference.docs!.href,
+    chapter.href,
     reference.source!.href,
     ...related.map(({ href }) => href),
-    chapter.href,
     excerpt.href,
     definition.href,
   ];
@@ -538,12 +538,12 @@ it("announces pending work once, removes the duplicate module row, and preserves
 });
 
 it.each([
-  ["Tailwind", "Tailwind CSS v4", BrandTailwindIcon],
-  ["React", "React", BrandReactIcon],
-  ["Preact", "preact v11", BrandReactIcon],
-  ["Valibot", "Valibot", CircuitBoardIcon],
+  ["Tailwind", "Tailwind CSS v4", LinkIcon],
+  ["React", "React", LinkIcon],
+  ["Preact", "preact v11", LinkIcon],
+  ["Valibot", "Valibot", LinkIcon],
 ] as const)(
-  "uses the canonical %s logo only for the main linked icon",
+  "uses a chain link for the main %s destination while keeping its technology badge",
   (module, name, MainIcon) => {
     const { container } = render(
       <CodeReferenceHelpContent

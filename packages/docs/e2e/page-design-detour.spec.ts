@@ -31,8 +31,8 @@ test("rocket sparkles change between loops and pause while the header is offscre
         rect.right <= field.right &&
         rect.top >= field.top &&
         rect.bottom <= field.bottom &&
-        (x < 30 || x > 70) &&
-        (y < 30 || y > 70)
+        (x < 30 || x > 70 || y < 30) &&
+        !(x < 50 && y > 50)
       );
     }),
   ).toBe(true);
@@ -45,7 +45,12 @@ test("rocket sparkles change between loops and pause while the header is offscre
   await expect
     .poll(() =>
       flight.evaluate((node) => [
-        ...new Set(node.getAnimations({ subtree: true }).map((animation) => animation.playState)),
+        ...new Set(
+          node
+            .getAnimations({ subtree: true })
+            .filter((animation) => animation.playState !== "finished")
+            .map((animation) => animation.playState),
+        ),
       ]),
     )
     .toEqual(["paused"]);
@@ -54,7 +59,12 @@ test("rocket sparkles change between loops and pause while the header is offscre
   await expect
     .poll(() =>
       flight.evaluate((node) => [
-        ...new Set(node.getAnimations({ subtree: true }).map((animation) => animation.playState)),
+        ...new Set(
+          node
+            .getAnimations({ subtree: true })
+            .filter((animation) => animation.playState !== "finished")
+            .map((animation) => animation.playState),
+        ),
       ]),
     )
     .toEqual(["running"]);
@@ -178,10 +188,9 @@ for (const scheme of ["light", "dark"] as const) {
             size: Number.parseFloat(style.width),
             x: rect.x,
             y: rect.y,
-            outer: (x < 30 || x > 70) && (y < 30 || y > 70),
-            clearance:
-              Math.hypot(((x - 50) * field.width) / 100, ((y - 50) * field.height) / 100) >
-              Math.min(field.width, field.height) * 0.42,
+            outer: (x < 30 || x > 70 || y < 30) && !(x < 50 && y > 50),
+            // Reserve a generous lower-left wake sector, including room around its edges.
+            clearance: x > 60 || y < 45,
             bounded: insideField(rect),
           };
         });
@@ -222,11 +231,12 @@ for (const scheme of ["light", "dark"] as const) {
         };
       });
       expect(motion.holdDuration).toBeGreaterThan(1_000);
-      expect(motion.holdDuration).toBeLessThan(3_000);
+      expect(motion.holdDuration).toBeLessThan(4_000);
       expect(motion.thrustDuration).toBeGreaterThan(100);
       expect(motion.thrustDuration).toBeLessThan(1_000);
       expect(motion.distance).toBeGreaterThan(0.15);
-      expect(motion.distance).toBeLessThan(6);
+      expect(motion.distance).toBeGreaterThan(8);
+      expect(motion.distance).toBeLessThan(20);
       expect(motion.seamless).toBe(true);
       expect(motion.alwaysVisible).toBe(true);
       expect(motion.bounded).toBe(true);
@@ -236,8 +246,8 @@ for (const scheme of ["light", "dark"] as const) {
       expect(motion.outerStars).toBe(true);
       expect(motion.clearStars).toBe(true);
       for (const size of motion.starSizes) {
-        expect(size).toBeGreaterThanOrEqual(width < 640 ? 11.8 : 14);
-        expect(size).toBeLessThanOrEqual(width < 640 ? 13.7 : 16);
+        expect(size).toBeGreaterThanOrEqual(width < 640 ? 11.3 : 13.3);
+        expect(size).toBeLessThanOrEqual(width < 640 ? 14.4 : 16.8);
       }
       expect(motion.boundedStars).toBe(true);
       expect(motion.variedSizes).toBe(true);

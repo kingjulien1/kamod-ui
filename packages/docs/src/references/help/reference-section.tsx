@@ -1,4 +1,4 @@
-import { ArrowUpRightIcon, InfoIcon, LinkIcon } from "@kamod-ch/icons/lucide";
+import { ArrowUpRightIcon, InfoIcon } from "@kamod-ch/icons/lucide";
 import type { ComponentChildren } from "preact";
 import type { CodeReferenceHelpLink } from "../types";
 
@@ -35,7 +35,7 @@ export function ReferenceSection({
             target={source ? "_top" : undefined}
             aria-label={source ? `Read ${title} for ${name}` : undefined}
           >
-            <Icon size={10} strokeWidth={2} aria-hidden="true" />
+            <Icon size={10} strokeWidth={2.6} aria-hidden="true" />
             <strong>{title}</strong>
           </Heading>
         </div>
@@ -47,13 +47,19 @@ export function ReferenceSection({
             aria-label={`Open ${title} source for ${name}`}
             title={`${source.label} — ${source.href}. ${detail ? `${detail}. ` : ""}Open the complete ${title.toLowerCase()} section for ${name}, including content abbreviated in this preview.`}
           >
-            <LinkIcon size={9} strokeWidth={1.75} aria-hidden="true" />
             <span>Full section</span>
-            <ArrowUpRightIcon size={9} strokeWidth={1.75} aria-hidden="true" />
+            <ArrowUpRightIcon size={9} strokeWidth={2.4} aria-hidden="true" />
           </a>
         )}
       </div>
-      <div class="code-reference-help-panel">{children}</div>
+      <div
+        class="code-reference-help-panel"
+        tabIndex={0}
+        role="region"
+        aria-label={`${title} preview`}
+      >
+        {children}
+      </div>
       {(source || note || detail || count) && (
         <p
           class="code-reference-help-section-note"

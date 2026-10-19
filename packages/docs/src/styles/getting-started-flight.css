@@ -9,6 +9,7 @@
 .page-header-decoration,
 .getting-started-flight,
 .getting-started-flight-rocket,
+.getting-started-flight-arrival,
 .getting-started-flight svg {
   padding: 0;
   border: 0;
@@ -18,12 +19,395 @@
 .getting-started-flight {
   --vehicle-size: 4.875rem;
   --trail-scale: 1;
-  --wake-distance: 0.875rem;
+  --wake-distance: 1.375rem;
   position: relative;
   display: block;
   width: 8rem;
   height: 6.75rem;
   color: var(--foreground);
+}
+@property --arrival-wake-strength {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+.getting-started-flight-arrival {
+  --arrival-distance: min(26.25rem, calc(var(--vehicle-size) * 2.5));
+  --arrival-wake-strength: 1;
+  position: absolute;
+  inset: 0;
+  transform-origin: center;
+  animation: getting-started-arrival var(--arrival-duration, 3200ms) linear both;
+}
+.getting-started-flight[data-flight-enhanced="true"] .getting-started-flight-arrival,
+.getting-started-flight[data-flight-arrival="false"] .getting-started-flight-arrival {
+  animation: none;
+}
+/* Deterministic first-paint fallback sampled from the same arc-length geometry as the live entry. */
+@keyframes getting-started-arrival {
+  0% {
+    transform: translate(calc(var(--arrival-distance) * -1), calc(var(--arrival-distance) * 0.56))
+      scale(0.06) rotate(-16.126deg);
+    opacity: 0;
+    --arrival-wake-strength: 0;
+  }
+  2.5% {
+    transform: translate(
+        calc(var(--arrival-distance) * -0.9999),
+        calc(var(--arrival-distance) * 0.5598)
+      )
+      scale(0.06015) rotate(-16.126deg);
+    opacity: 0.00025789966116406297;
+    --arrival-wake-strength: 0;
+  }
+  5% {
+    transform: translate(
+        calc(var(--arrival-distance) * -0.9994),
+        calc(var(--arrival-distance) * 0.5589)
+      )
+      scale(0.06088) rotate(-16.126deg);
+    opacity: 0.0015636111556951546;
+    --arrival-wake-strength: 0;
+  }
+  7.5% {
+    transform: translate(
+        calc(var(--arrival-distance) * -0.9982),
+        calc(var(--arrival-distance) * 0.5567)
+      )
+      scale(0.06253) rotate(-16.126deg);
+    opacity: 0.0044871029492071675;
+    --arrival-wake-strength: 0;
+  }
+  10% {
+    transform: translate(
+        calc(var(--arrival-distance) * -0.9962),
+        calc(var(--arrival-distance) * 0.553)
+      )
+      scale(0.06535) rotate(-16.459deg);
+    opacity: 0.009479965329070462;
+    --arrival-wake-strength: 0;
+  }
+  12.5% {
+    transform: translate(
+        calc(var(--arrival-distance) * -0.9932),
+        calc(var(--arrival-distance) * 0.5475)
+      )
+      scale(0.06955) rotate(-16.756deg);
+    opacity: 0.016934515769843048;
+    --arrival-wake-strength: 0;
+  }
+  15% {
+    transform: translate(
+        calc(var(--arrival-distance) * -0.9892),
+        calc(var(--arrival-distance) * 0.5399)
+      )
+      scale(0.07534) rotate(-17.254deg);
+    opacity: 0.027204705103003875;
+    --arrival-wake-strength: 0;
+  }
+  17.5% {
+    transform: translate(
+        calc(var(--arrival-distance) * -0.984),
+        calc(var(--arrival-distance) * 0.53)
+      )
+      scale(0.08291) rotate(-17.643deg);
+    opacity: 0.04061679729893879;
+    --arrival-wake-strength: 0;
+  }
+  20% {
+    transform: translate(
+        calc(var(--arrival-distance) * -0.9775),
+        calc(var(--arrival-distance) * 0.5174)
+      )
+      scale(0.09242) rotate(-17.942deg);
+    opacity: 0.05747576199686518;
+    --arrival-wake-strength: 0;
+  }
+  22.5% {
+    transform: translate(
+        calc(var(--arrival-distance) * -0.9697),
+        calc(var(--arrival-distance) * 0.5021)
+      )
+      scale(0.10403) rotate(-18.164deg);
+    opacity: 0.0780694816965089;
+    --arrival-wake-strength: 0;
+  }
+  25% {
+    transform: translate(
+        calc(var(--arrival-distance) * -0.9604),
+        calc(var(--arrival-distance) * 0.4836)
+      )
+      scale(0.11791) rotate(-18.376deg);
+    opacity: 0.10267170439273078;
+    --arrival-wake-strength: 0;
+  }
+  27.500000000000004% {
+    transform: translate(
+        calc(var(--arrival-distance) * -0.9496),
+        calc(var(--arrival-distance) * 0.462)
+      )
+      scale(0.13419) rotate(-18.47deg);
+    opacity: 0.13154421480380799;
+    --arrival-wake-strength: 0;
+  }
+  30% {
+    transform: translate(
+        calc(var(--arrival-distance) * -0.9371),
+        calc(var(--arrival-distance) * 0.437)
+      )
+      scale(0.15303) rotate(-18.42deg);
+    opacity: 0.16493848884661177;
+    --arrival-wake-strength: 0;
+  }
+  32.5% {
+    transform: translate(
+        calc(var(--arrival-distance) * -0.9227),
+        calc(var(--arrival-distance) * 0.4084)
+      )
+      scale(0.17455) rotate(-18.214deg);
+    opacity: 0.20309699026129044;
+    --arrival-wake-strength: 0;
+  }
+  35% {
+    transform: translate(
+        calc(var(--arrival-distance) * -0.9063),
+        calc(var(--arrival-distance) * 0.3762)
+      )
+      scale(0.19889) rotate(-17.864deg);
+    opacity: 0.24625421017838528;
+    --arrival-wake-strength: 0;
+  }
+  37.5% {
+    transform: translate(
+        calc(var(--arrival-distance) * -0.8877),
+        calc(var(--arrival-distance) * 0.3402)
+      )
+      scale(0.22618) rotate(-17.234deg);
+    opacity: 0.2946375164328693;
+    --arrival-wake-strength: 0;
+  }
+  40% {
+    transform: translate(
+        calc(var(--arrival-distance) * -0.8664),
+        calc(var(--arrival-distance) * 0.3005)
+      )
+      scale(0.25654) rotate(-16.392deg);
+    opacity: 0.3484678585258293;
+    --arrival-wake-strength: 0.011350893894371931;
+  }
+  42.5% {
+    transform: translate(
+        calc(var(--arrival-distance) * -0.8421),
+        calc(var(--arrival-distance) * 0.257)
+      )
+      scale(0.29009) rotate(-15.328deg);
+    opacity: 0.4079603607352496;
+    --arrival-wake-strength: 0.05597027055143717;
+  }
+  45% {
+    transform: translate(
+        calc(var(--arrival-distance) * -0.8142),
+        calc(var(--arrival-distance) * 0.2098)
+      )
+      scale(0.32696) rotate(-13.727deg);
+    opacity: 0.47332482698511535;
+    --arrival-wake-strength: 0.1049936202388365;
+  }
+  47.5% {
+    transform: translate(
+        calc(var(--arrival-distance) * -0.7821),
+        calc(var(--arrival-distance) * 0.1593)
+      )
+      scale(0.36725) rotate(-11.331deg);
+    opacity: 0.5447661750037066;
+    --arrival-wake-strength: 0.1585746312527799;
+  }
+  50% {
+    transform: translate(
+        calc(var(--arrival-distance) * -0.7446),
+        calc(var(--arrival-distance) * 0.1061)
+      )
+      scale(0.41108) rotate(-8.22deg);
+    opacity: 0.6224848130396818;
+    --arrival-wake-strength: 0.21686360977976132;
+  }
+  52.5% {
+    transform: translate(
+        calc(var(--arrival-distance) * -0.7001),
+        calc(var(--arrival-distance) * 0.0514)
+      )
+      scale(0.45857) rotate(-3.491deg);
+    opacity: 0.7066769693484727;
+    --arrival-wake-strength: 0.28000772701135446;
+  }
+  55.00000000000001% {
+    transform: translate(
+        calc(var(--arrival-distance) * -0.6459),
+        calc(var(--arrival-distance) * -0.002)
+      )
+      scale(0.50981) rotate(4.966deg);
+    opacity: 0.7975349824269365;
+    --arrival-wake-strength: 0.3481512368202023;
+  }
+  57.49999999999999% {
+    transform: translate(
+        calc(var(--arrival-distance) * -0.578),
+        calc(var(--arrival-distance) * -0.0472)
+      )
+      scale(0.56492) rotate(19.216deg);
+    opacity: 0.8952475583116626;
+    --arrival-wake-strength: 0.4214356687337469;
+  }
+  60% {
+    transform: translate(
+        calc(var(--arrival-distance) * -0.4934),
+        calc(var(--arrival-distance) * -0.0676)
+      )
+      scale(0.624) rotate(44.517deg);
+    opacity: 1;
+    --arrival-wake-strength: 0.49999999999999994;
+  }
+  62.5% {
+    transform: translate(
+        calc(var(--arrival-distance) * -0.4107),
+        calc(var(--arrival-distance) * -0.046)
+      )
+      scale(0.68208) rotate(72.777deg);
+    opacity: 1;
+    --arrival-wake-strength: 0.5772386043302324;
+  }
+  65% {
+    transform: translate(
+        calc(var(--arrival-distance) * -0.3438),
+        calc(var(--arrival-distance) * -0.0069)
+      )
+      scale(0.73429) rotate(75.336deg);
+    opacity: 1;
+    --arrival-wake-strength: 0.646661515325764;
+  }
+  67.5% {
+    transform: translate(
+        calc(var(--arrival-distance) * -0.2838),
+        calc(var(--arrival-distance) * 0.0275)
+      )
+      scale(0.78086) rotate(74.021deg);
+    opacity: 1;
+    --arrival-wake-strength: 0.7085857629445669;
+  }
+  70% {
+    transform: translate(
+        calc(var(--arrival-distance) * -0.2296),
+        calc(var(--arrival-distance) * 0.056)
+      )
+      scale(0.82203) rotate(71.009deg);
+    opacity: 1;
+    --arrival-wake-strength: 0.7633375865074421;
+  }
+  72.5% {
+    transform: translate(
+        calc(var(--arrival-distance) * -0.1803),
+        calc(var(--arrival-distance) * 0.0767)
+      )
+      scale(0.85806) rotate(63.706deg);
+    opacity: 1;
+    --arrival-wake-strength: 0.8112534462140966;
+  }
+  75% {
+    transform: translate(
+        calc(var(--arrival-distance) * -0.1351),
+        calc(var(--arrival-distance) * 0.0855)
+      )
+      scale(0.88922) rotate(46.087deg);
+    opacity: 1;
+    --arrival-wake-strength: 0.8526812417835652;
+  }
+  77.5% {
+    transform: translate(
+        calc(var(--arrival-distance) * -0.0966),
+        calc(var(--arrival-distance) * 0.0783)
+      )
+      scale(0.91576) rotate(22.305deg);
+    opacity: 1;
+    --arrival-wake-strength: 0.8879818040797555;
+  }
+  80% {
+    transform: translate(
+        calc(var(--arrival-distance) * -0.068),
+        calc(var(--arrival-distance) * 0.062)
+      )
+      scale(0.93798) rotate(8.979deg);
+    opacity: 1;
+    --arrival-wake-strength: 0.9175307555766943;
+  }
+  82.5% {
+    transform: translate(
+        calc(var(--arrival-distance) * -0.047),
+        calc(var(--arrival-distance) * 0.045)
+      )
+      scale(0.95617) rotate(3.701deg);
+    opacity: 1;
+    --arrival-wake-strength: 0.9417208842864796;
+  }
+  85% {
+    transform: translate(
+        calc(var(--arrival-distance) * -0.0311),
+        calc(var(--arrival-distance) * 0.0305)
+      )
+      scale(0.97065) rotate(1.637deg);
+    opacity: 1;
+    --arrival-wake-strength: 0.9609652591517456;
+  }
+  87.5% {
+    transform: translate(
+        calc(var(--arrival-distance) * -0.0193),
+        calc(var(--arrival-distance) * 0.0191)
+      )
+      scale(0.98173) rotate(0.607deg);
+    opacity: 1;
+    --arrival-wake-strength: 0.9757014666410219;
+  }
+  90% {
+    transform: translate(
+        calc(var(--arrival-distance) * -0.0108),
+        calc(var(--arrival-distance) * 0.0107)
+      )
+      scale(0.98977) rotate(0.236deg);
+    opacity: 1;
+    --arrival-wake-strength: 0.9863976474484981;
+  }
+  92.5% {
+    transform: translate(
+        calc(var(--arrival-distance) * -0.0051),
+        calc(var(--arrival-distance) * 0.0051)
+      )
+      scale(0.99516) rotate(0.077deg);
+    opacity: 1;
+    --arrival-wake-strength: 0.9935616688319698;
+  }
+  95% {
+    transform: translate(
+        calc(var(--arrival-distance) * -0.0018),
+        calc(var(--arrival-distance) * 0.0018)
+      )
+      scale(0.99831) rotate(0.022deg);
+    opacity: 1;
+    --arrival-wake-strength: 0.9977564485253965;
+  }
+  97.5% {
+    transform: translate(
+        calc(var(--arrival-distance) * -0.0003),
+        calc(var(--arrival-distance) * 0.0003)
+      )
+      scale(0.99972) rotate(0.022deg);
+    opacity: 1;
+    --arrival-wake-strength: 0.9996299520101293;
+  }
+  100% {
+    transform: translate(calc(var(--arrival-distance) * 0), calc(var(--arrival-distance) * 0))
+      scale(1) rotate(0deg);
+    opacity: 1;
+    --arrival-wake-strength: 1;
+  }
 }
 .getting-started-flight-rocket {
   position: absolute;
@@ -31,8 +415,9 @@
   left: calc(50% - var(--vehicle-size) / 2);
   width: var(--vehicle-size);
   height: var(--vehicle-size);
-  /* The vehicle never resets or fades; a small closed bank sits above quicker engine vibration. */
-  animation: getting-started-flight-hold 2.4s ease-in-out infinite;
+  /* Entry owns the outside transform; this continuous bank begins exactly at touchdown. */
+  animation: getting-started-flight-hold 3s ease-in-out var(--arrival-duration, 3200ms) infinite
+    both;
 }
 .getting-started-flight-thrust {
   display: block;
@@ -48,9 +433,10 @@
 }
 .getting-started-flight-trail {
   position: absolute;
-  width: calc(var(--trail-size) * var(--trail-scale));
-  height: calc(var(--trail-size) * var(--trail-scale));
+  width: calc(var(--trail-size) * var(--trail-scale) * (0.8 + var(--arrival-wake-strength) * 0.2));
+  height: calc(var(--trail-size) * var(--trail-scale) * (0.8 + var(--arrival-wake-strength) * 0.2));
   opacity: 0;
+  stroke-width: calc(1.05px + var(--arrival-wake-strength) * 0.85px);
   translate: -50% -50%;
   /* Each wake leaves the nozzle independently and resets only after it has disappeared. */
   animation: getting-started-exhaust var(--trail-duration) linear var(--trail-delay) infinite;
@@ -65,7 +451,8 @@
   color: inherit;
   opacity: 0;
   translate: -50% -50%;
-  animation: getting-started-star var(--star-duration) ease-in-out var(--star-delay) infinite;
+  animation: getting-started-star var(--star-duration) ease-in-out
+    calc(var(--star-arrival-delay, 4200ms) + var(--star-delay)) infinite both;
 }
 .getting-started-flight[data-active="false"] * {
   animation-play-state: paused;
@@ -73,16 +460,16 @@
 @keyframes getting-started-flight-hold {
   0%,
   100% {
-    transform: translate(0, 0) rotate(-0.5deg);
+    transform: translate(0, 0) rotate(0deg);
   }
   25% {
-    transform: translate(1.5px, 0.5px) rotate(0.65deg);
+    transform: translate(6px, 3px) rotate(4deg);
   }
   50% {
-    transform: translate(0.2px, -0.3px) rotate(-0.4deg);
+    transform: translate(1px, -5px) rotate(-2deg);
   }
   75% {
-    transform: translate(-1.4px, -0.5px) rotate(-1.65deg);
+    transform: translate(-6px, -2px) rotate(-5deg);
   }
 }
 @keyframes getting-started-flight-turbulence {
@@ -103,7 +490,7 @@
 @keyframes getting-started-exhaust {
   0% {
     opacity: 0;
-    transform: translate(2px, -2px) scale(0.45);
+    transform: translate(2px, -2px) scale(0.4) rotate(-6deg);
   }
   18% {
     opacity: 0.52;
@@ -114,24 +501,28 @@
   90%,
   100% {
     opacity: 0;
-    transform: translate(calc(-1 * var(--wake-distance)), var(--wake-distance)) scale(1.15);
+    transform: translate(
+        calc(-1 * var(--wake-distance) + var(--trail-drift)),
+        calc(var(--wake-distance) * 0.9)
+      )
+      scale(1.3) rotate(8deg);
   }
 }
 @keyframes getting-started-star {
   0%,
-  12% {
+  2% {
     opacity: 0;
     transform: translate(1px, -1px) scale(0.3) rotate(-25deg);
   }
-  28% {
+  18% {
     opacity: 0.62;
     transform: scale(1.12) rotate(0deg);
   }
-  38% {
+  29% {
     opacity: 0.22;
     transform: scale(0.8) rotate(8deg);
   }
-  48% {
+  42% {
     opacity: 0.48;
     transform: scale(1) rotate(14deg);
   }
@@ -170,7 +561,7 @@
   .getting-started-flight {
     --vehicle-size: 3.25rem;
     --trail-scale: 0.67;
-    --wake-distance: 0.5625rem;
+    --wake-distance: 0.9375rem;
     width: 5.5rem;
     height: 4.5rem;
   }
@@ -182,10 +573,58 @@
     max-width: calc(100% - 6rem);
   }
 }
+/* Loading-page flight gets a larger, more expressive orbit; normal guides stay compact. */
+.getting-started-flight--expansive {
+  --vehicle-size: 8.75rem;
+  --trail-scale: 1.7;
+  --wake-distance: 2rem;
+  width: 20rem;
+  height: 15rem;
+}
+.getting-started-flight--expansive .getting-started-flight-rocket {
+  animation: page-opening-flight 3.6s ease-in-out var(--arrival-duration, 3200ms) infinite both;
+}
+@keyframes page-opening-flight {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  24% {
+    transform: translate(22px, -15px) rotate(10deg);
+  }
+  50% {
+    transform: translate(6px, -22px) rotate(3deg);
+  }
+  76% {
+    transform: translate(-22px, 15px) rotate(-12deg);
+  }
+}
+@media (max-width: 639px) {
+  .getting-started-flight--expansive {
+    --vehicle-size: 5.5rem;
+    --trail-scale: 1.1;
+    --wake-distance: 1.25rem;
+    width: 11rem;
+    height: 9rem;
+  }
+  .getting-started-flight--expansive .getting-started-flight-star {
+    width: calc(var(--star-size) * 0.65);
+    height: calc(var(--star-size) * 0.65);
+  }
+}
+.getting-started-flight[data-active="false"] * {
+  animation-play-state: paused;
+}
 @media (prefers-reduced-motion: reduce) {
+  .getting-started-flight.getting-started-flight--expansive *,
   .getting-started-flight *,
   aside.docs-sidebar .navigation-header-link[aria-current="page"] > svg {
     animation: none;
+  }
+  .getting-started-flight-arrival {
+    opacity: 1;
+    transform: none;
+    --arrival-wake-strength: 1;
   }
   .getting-started-flight-star {
     opacity: 0.32;

@@ -2,6 +2,7 @@
 import { renderToString } from "preact-render-to-string";
 import { describe, expect, it } from "vitest";
 import { PageOpening } from "./PageOpening";
+import { PageLoadError, PageNotFound } from "./PageState";
 
 function markup(startup: boolean, base = "/") {
   const root = document.createElement("div");
@@ -48,4 +49,25 @@ describe("shared page opening screen", () => {
       }
     }
   });
+});
+
+it("shares official branding and footer destinations across standalone states", () => {
+  for (const state of [<PageOpening />, <PageNotFound />, <PageLoadError />]) {
+    const root = document.createElement("div");
+    root.innerHTML = renderToString(state);
+    expect(root.querySelector("header .kamod-ui-logo-wordmark")?.textContent).toBe("kamod");
+    expect(root.querySelector("header .kamod-ui-logo-product")?.textContent).toBe("UI");
+    expect(root.querySelector("footer")?.textContent).toContain("Copyright © 2026 Klaus Zahiragic");
+    expect(root.querySelector('footer a[href="https://www.kamod.ch/"]')).not.toBeNull();
+    expect(
+      root.querySelector('footer a[href="https://kamod-ch.github.io/preactpress/"]'),
+    ).not.toBeNull();
+    expect(root.querySelectorAll("main#content")).toHaveLength(1);
+  }
+  const root = markup(false);
+  expect(root.querySelector(".page-loading-separator")?.textContent).toBe("/");
+  expect(root.querySelector(".page-loading-tagline svg")?.getAttribute("fill")).toBe(
+    "currentColor",
+  );
+  expect(root.querySelectorAll(".getting-started-flight-star")).toHaveLength(6);
 });
