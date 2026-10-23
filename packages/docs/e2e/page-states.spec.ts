@@ -40,11 +40,14 @@ async function expectReachableControls(scope: Locator) {
 }
 
 async function expectLoadingContentReachable(loading: Locator) {
-  for (const part of await loading
-    .locator(
-      ".page-loading-label, .page-loading-title, .page-loading-description, .page-loading-track, .page-loading-panel-header, .page-loading-panel-footer, .page-loading-tagline",
-    )
-    .all()) {
+  await expectContentReachable(
+    loading,
+    ".page-loading-label, .page-loading-title, .page-loading-description, .page-loading-track, .page-loading-panel-header, .page-loading-panel-footer, .page-loading-tagline",
+  );
+}
+
+async function expectContentReachable(scope: Locator, selector: string) {
+  for (const part of await scope.locator(selector).all()) {
     const geometry = () =>
       part.evaluate((element) => {
         const bounds = element.getBoundingClientRect();
@@ -250,27 +253,13 @@ async function expectSharedLoadingDesign(loading: Locator) {
 }
 
 async function expectNotFoundFits(page: Page) {
-  await expectStandaloneFrameFits(page, true);
-  const hero = page.locator(".not-found-hero");
-  for (const part of await hero
-    .locator(".not-found-status, h1, .not-found-description, a[href]")
-    .all()) {
-    const geometry = await part.evaluate((element) => {
-      const bounds = element.getBoundingClientRect();
-      const main = element.closest<HTMLElement>(".page-state-main")!;
-      const mainBounds = main.getBoundingClientRect();
-      return {
-        top: bounds.top,
-        bottom: bounds.bottom,
-        mainTop: mainBounds.top + main.clientTop,
-        mainBottom: mainBounds.top + main.clientTop + main.clientHeight,
-      };
-    });
-    // A fixed-height shell must fit the content, rather than hide it behind its chrome.
-    expect(geometry.top).toBeGreaterThanOrEqual(geometry.mainTop - 1);
-    expect(geometry.bottom).toBeLessThanOrEqual(geometry.mainBottom + 1);
-    await expect(part).toBeInViewport({ ratio: viewportIntersectionRatio });
-  }
+  // Short windows and enlarged text use the same accessible inner scrollport as loading.
+  const viewport = page.viewportSize()!;
+  await expectStandaloneFrameFits(page, viewport.width >= 1024 && viewport.height >= 768);
+  await expectContentReachable(
+    page.locator(".not-found-hero"),
+    ".not-found-eyebrow, h1, .not-found-description, .not-found-directory-label, a[href]",
+  );
 }
 
 async function expectRecoveryFits(page: Page, compact: boolean) {
@@ -409,15 +398,15 @@ test("unknown addresses offer working recovery links on direct and client naviga
   });
   await page.goto("./this-page-does-not-exist");
   await expect(page).toHaveURL(/\/this-page-does-not-exist$/);
-  await expect(page.locator("h1")).toHaveText("Page not found");
-  await expect(page.locator(".page-state-main").getByRole("link")).toHaveCount(2);
+  await expect(page.locator("h1")).toHaveText("Let’s Find Your Way Back.");
+  await expect(page.locator(".page-state-main").getByRole("link")).toHaveCount(11);
   await page.getByRole("link", { name: "Getting Started", exact: true }).click();
   await expect(page.locator("h1")).toContainText("Getting Started with Kamod UI");
   await page.evaluate(() => {
     history.pushState({}, "", "./another-missing-page");
     dispatchEvent(new PopStateEvent("popstate"));
   });
-  await expect(page.locator("h1")).toHaveText("Page not found");
+  await expect(page.locator("h1")).toHaveText("Let’s Find Your Way Back.");
   const home = page.getByRole("link", { name: "Back to Home", exact: true });
   const gettingStarted = page.getByRole("link", { name: "Getting Started", exact: true });
   await home.focus();
@@ -726,11 +715,84 @@ for (const width of [320, 768, 1024, 1440]) {
       await page.emulateMedia({ colorScheme, reducedMotion: "reduce" });
       await page.addInitScript(() => localStorage.setItem("theme-preset", "cursor-warm"));
       await page.goto("./404");
-      await expect(page.locator("h1")).toHaveText("Page not found");
+      await expect(page.locator("h1")).toHaveText("Let’s Find Your Way Back.");
       await expect(page.locator(".not-found-status")).toHaveText("404");
-      await expect(page.locator(".page-state-main").getByRole("link")).toHaveCount(2);
+      await expect(page.locator(".page-state-main").getByRole("link")).toHaveCount(11);
+      await expect(page.locator(".not-found-destination")).toHaveText([
+        /Components.*\/docs\/components/s,
+        /Blocks.*\/blocks/s,
+        /Packages.*\/docs\/packages/s,
+        /Forms.*\/docs\/forms/s,
+      ]);
+      await expect(page.locator(".not-found-package-link code")).toHaveText([
+        "@kamod-ch/ui",
+        "@kamod-ch/icons",
+        "@kamod-ch/hooks",
+        "@kamod-ch/signals",
+      ]);
+      await expect(page.locator(".not-found-description")).toHaveCSS("-webkit-line-clamp", "2");
+      await expect(page.locator(".not-found-directory-label")).toHaveText([
+        "A good place to continue",
+        "Tools to take with you",
+      ]);
+      const groups = await page.locator(".not-found-directory").evaluate((directory) => {
+        const [first, second] = [
+          ...directory.querySelectorAll<HTMLElement>(".not-found-directory-group"),
+        ];
+        const label = (group: HTMLElement) => {
+          const style = getComputedStyle(group.querySelector("h2")!);
+          return [
+            style.fontSize,
+            style.fontWeight,
+            style.letterSpacing,
+            style.color,
+            style.marginBottom,
+          ];
+        };
+        return {
+          firstLabel: label(first),
+          secondLabel: label(second),
+          gap: second.getBoundingClientRect().top - first.getBoundingClientRect().bottom,
+          inset: parseFloat(getComputedStyle(second).paddingTop),
+          rule: parseFloat(getComputedStyle(second).borderTopWidth),
+        };
+      });
+      expect(groups.secondLabel).toEqual(groups.firstLabel);
+      expect(groups.gap).toBeGreaterThan(0);
+      expect(groups.inset).toBeGreaterThan(0);
+      expect(groups.rule).toBeGreaterThan(0);
+      if (width >= 1024) {
+        const layout = await page.locator(".not-found-directory").evaluate((directory) => {
+          const grids = [...directory.querySelectorAll<HTMLElement>(".not-found-destinations")];
+          return {
+            columns: grids.map(
+              (grid) => getComputedStyle(grid).gridTemplateColumns.split(" ").length,
+            ),
+            width: directory.getBoundingClientRect().width,
+            gridWidths: grids.map((grid) => grid.getBoundingClientRect().width),
+            rows: grids.map((grid) =>
+              [...grid.children].map((child) => child.getBoundingClientRect().top),
+            ),
+          };
+        });
+        expect(layout.columns).toEqual([4, 4]);
+        for (const gridWidth of layout.gridWidths) expect(layout.width).toBeCloseTo(gridWidth, 0);
+        for (const row of layout.rows) expect(new Set(row).size).toBe(1);
+        expect(layout.rows[1][0]).toBeGreaterThan(layout.rows[0][0]);
+      }
       await expectNotFoundFits(page);
-      if (width === 1440) await assertNoBlockingA11yViolations(page, `404 / ${colorScheme}`);
+      if (width === 1440) {
+        await assertNoBlockingA11yViolations(page, `404 / ${colorScheme}`);
+        await page.setViewportSize({ width, height: 600 });
+        await expect
+          .poll(() =>
+            page
+              .locator(".page-state-main")
+              .evaluate((main) => main.scrollHeight - main.clientHeight),
+          )
+          .toBe(0);
+        await expectNotFoundFits(page);
+      }
     });
   }
 }
