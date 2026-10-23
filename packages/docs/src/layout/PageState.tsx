@@ -1,12 +1,14 @@
 import {
   ArrowRightIcon,
   ArrowUpRightIcon,
+  BookOpenIcon,
   HouseIcon,
   RotateCcwIcon,
   RouteIcon,
 } from "@kamod-ch/icons/lucide";
 import { APP_BASE_URL, withBasePath } from "../base-path";
 import { ExceptionPageFrame } from "./ExceptionPageFrame";
+import { NotFoundDirectory } from "./NotFoundDirectory";
 import { PageOpening } from "./PageOpening";
 
 /** A standalone recovery page, with no demo registry or browser-only state. */
@@ -14,22 +16,49 @@ export function PageNotFound() {
   return (
     <ExceptionPageFrame base={APP_BASE_URL} class="page-state-shell--not-found">
       <section class="not-found-hero" aria-labelledby="page-state-title">
-        <p class="not-found-status" aria-hidden="true">
-          404
+        <p class="not-found-eyebrow">
+          <strong>Kamod</strong>
+          <span class="not-found-separator" aria-hidden="true">
+            /
+          </span>
+          <span class="not-found-status">404</span>
+          <span class="not-found-caption">Page not found</span>
         </p>
         <div class="not-found-copy">
-          <h1 id="page-state-title">Page not found</h1>
-          <p class="not-found-description">We couldn’t find that page.</p>
-          <nav class="not-found-actions" aria-label="Page recovery">
-            <a class="not-found-home" href={withBasePath("/")}>
-              <HouseIcon size={15} aria-hidden="true" />
-              Back to Home
+          <h1 id="page-state-title">Let’s Find Your Way Back.</h1>
+          <p class="not-found-description">
+            The page you’re looking for may have moved, or the link may be out of date. Head home,
+            get your bearings with the setup guide, or find your next building block below.
+            Everything you need to keep creating is still here.
+          </p>
+          <nav class="not-found-actions page-recovery-actions" aria-label="Page recovery">
+            <a class="not-found-home page-recovery-link" href={withBasePath("/")}>
+              <HouseIcon size={14} aria-hidden="true" />
+              <span>Back to Home</span>
+              <ArrowUpRightIcon size={12} aria-hidden="true" />
             </a>
-            <a class="not-found-guide" href={withBasePath("/docs/getting-started")}>
-              Getting Started <ArrowRightIcon size={14} aria-hidden="true" />
+            <span class="page-recovery-action-divider" aria-hidden="true">
+              /
+            </span>
+            <a
+              class="not-found-guide page-recovery-link"
+              href={withBasePath("/docs/getting-started")}
+            >
+              <BookOpenIcon size={14} aria-hidden="true" />
+              <span>Getting Started</span>
+              <ArrowUpRightIcon size={12} aria-hidden="true" />
+            </a>
+            <span class="page-recovery-action-divider" aria-hidden="true">
+              /
+            </span>
+            <a class="page-recovery-link" href={withBasePath("/docs/components")}>
+              <RouteIcon size={14} aria-hidden="true" />
+              <span>Explore Components</span>
+              <ArrowUpRightIcon size={12} aria-hidden="true" />
             </a>
           </nav>
         </div>
+        <NotFoundDirectory />
       </section>
     </ExceptionPageFrame>
   );

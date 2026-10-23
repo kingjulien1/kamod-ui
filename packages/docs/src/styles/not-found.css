@@ -1,142 +1,230 @@
-/* A single quiet recovery message; the shared header and footer keep their layout. */
-.page-state-shell--not-found {
-  max-height: 100vh;
-  max-height: 100dvh;
-  overflow: clip;
-}
-.page-state-shell--not-found .page-state-main {
-  display: grid;
-  place-items: center;
-  width: min(100%, 38rem);
-  padding-block: clamp(0.75rem, 3dvh, 2rem);
-  overflow: clip;
-}
-.not-found-hero,
-.not-found-copy {
-  display: grid;
-  justify-items: center;
-  min-width: 0;
-  text-align: center;
-}
+/* A quiet editorial recovery column, using the shared opening/retry page chrome. */
 .not-found-hero {
+  flex: none;
   width: 100%;
-  gap: clamp(0.75rem, 2dvh, 1.25rem);
+  min-width: 0;
+  margin-block: auto;
+  padding-block: clamp(0.25rem, 1dvh, 1rem);
+}
+.not-found-eyebrow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem;
+  margin: 0 0 clamp(0.75rem, 2.5dvh, 1.5rem);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+.not-found-eyebrow strong,
+.not-found-separator {
+  font-weight: 600;
 }
 .not-found-status {
-  margin: 0;
-  color: var(--muted-foreground);
-  font-size: clamp(3rem, 12dvh, 6rem);
-  font-weight: 650;
-  line-height: 1;
-  letter-spacing: -0.07em;
+  color: color-mix(in oklab, var(--opening-ink) 65%, transparent);
+  font-family: var(--docs-font-mono, monospace);
+  font-size: 0.8125rem;
 }
-.not-found-copy {
-  gap: clamp(0.75rem, 1.75dvh, 1rem);
+.not-found-caption {
+  color: color-mix(in oklab, var(--opening-ink) 65%, transparent);
 }
 .not-found-hero h1 {
   margin: 0;
-  color: var(--foreground);
-  font-size: clamp(1.5rem, 3.5vw, 2rem);
-  font-weight: 600;
-  line-height: 1.2;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 650;
+  line-height: 1.12;
   letter-spacing: -0.04em;
   text-wrap: balance;
 }
 .not-found-description {
-  margin: 0;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  max-width: 54ch;
+  margin: clamp(0.75rem, 2.5dvh, 1.5rem) 0 0;
   color: color-mix(in oklab, var(--muted-foreground) 65%, var(--foreground));
-  font-size: 0.875rem;
-  line-height: 1.5;
+  font-size: 0.9375rem;
+  font-weight: 450;
+  line-height: 1.8;
 }
 .not-found-actions {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-top: 0.375rem;
+  gap: 0.625rem clamp(1rem, 2.5vw, 1.75rem);
+  margin-top: clamp(1rem, 3dvh, 1.75rem);
 }
-.not-found-actions a {
+.not-found-actions .page-recovery-link {
+  min-height: 2.25rem;
+  font-size: 0.875rem;
+}
+.not-found-directory {
+  margin-top: clamp(1.5rem, 5dvh, 3rem);
+  padding-top: clamp(1rem, 2.5dvh, 1.5rem);
+  border-top: 1px solid var(--page-state-rule);
+}
+.not-found-directory-group + .not-found-directory-group {
+  margin-top: clamp(1.75rem, 4dvh, 2.5rem);
+  padding-top: clamp(1rem, 2.5dvh, 1.5rem);
+  border-top: 1px solid var(--page-state-rule);
+}
+.not-found-directory-label {
+  margin: 0 0 1rem;
+  color: color-mix(in oklab, var(--opening-ink) 65%, transparent);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0.035em;
+}
+.not-found-destinations {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 2rem clamp(1rem, 2.5vw, 2rem);
+}
+.not-found-destination {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 0.5rem;
+  min-width: 0;
+  padding-block: 0.25rem;
+  color: var(--opening-ink);
+}
+.not-found-destination-title {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
   gap: 0.5rem;
-  box-sizing: border-box;
-  min-height: 2.5rem;
-  padding: 0.5rem 0.875rem;
-  border-radius: 0.5rem;
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   font-weight: 550;
   line-height: 1.5;
-  white-space: nowrap;
 }
-.not-found-actions svg {
+.not-found-destination-title svg {
+  flex: none;
+  opacity: 0.4;
+  stroke-width: 1.75;
+}
+.not-found-destination-description {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  min-height: 3.3em;
+  overflow: hidden;
+  color: color-mix(in oklab, var(--opening-ink) 65%, transparent);
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.65;
+}
+.not-found-path,
+.not-found-package-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-width: 0;
+  max-width: 100%;
+  color: color-mix(in oklab, var(--opening-ink) 75%, transparent);
+  font-size: 0.75rem;
+  text-decoration: none;
+}
+.not-found-hero code {
+  background: var(--docs-inline-code-background);
+  color: color-mix(in oklab, var(--secondary-accent) 35%, var(--foreground));
+  box-shadow: none;
+  font-family: var(--docs-font-mono, monospace);
+}
+.not-found-path code,
+.not-found-package-link code {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.not-found-path svg,
+.not-found-package-link svg {
   flex: none;
   stroke-width: 1.75;
 }
-.not-found-home {
-  background: var(--foreground);
-  color: var(--background);
+.not-found-package {
+  min-width: 0;
+  font-size: 0.75rem;
 }
-.not-found-actions .not-found-guide {
-  padding-inline: 0.25rem;
-  color: var(--foreground);
+.not-found-package-link {
+  color: color-mix(in oklab, var(--opening-ink) 70%, transparent);
+}
+/* Keep shared reference help, with a navigation cue only when this link is used. */
+.not-found-hero .not-found-package-link:not(:hover, :focus-visible) code::before {
+  border-bottom-color: transparent;
+}
+.not-found-package-description {
+  margin: 0.375rem 0 0;
+  color: color-mix(in oklab, var(--opening-ink) 65%, transparent);
+  font-size: 0.6875rem;
+  line-height: 1.6;
+}
+.dark .not-found-package-description {
+  color: color-mix(in oklab, var(--opening-ink) 52%, transparent);
+}
+.not-found-package-link:focus-visible code,
+.not-found-destination:focus-visible .not-found-path code {
   text-decoration: underline;
-  text-decoration-color: color-mix(in oklab, currentColor 25%, transparent);
   text-underline-offset: 0.2em;
 }
-.not-found-guide svg {
-  opacity: 0.6;
+.not-found-destination:focus-visible .not-found-destination-title {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
 }
 @media (hover: hover) and (pointer: fine) {
-  .not-found-home:hover {
-    background: color-mix(in oklab, var(--foreground) 85%, var(--background));
+  .not-found-destination:hover .not-found-destination-title {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
   }
-  .not-found-guide:hover {
-    text-decoration-color: currentColor;
+  .not-found-destination:hover svg {
+    opacity: 0.8;
+  }
+  .not-found-package-link:hover code,
+  .not-found-destination:hover .not-found-path code {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
   }
 }
-@media (prefers-reduced-motion: no-preference) {
-  .not-found-actions a {
-    transition:
-      background-color 150ms ease,
-      text-decoration-color 150ms ease;
+@media (max-width: 899px) {
+  .not-found-destinations {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 479px) {
+  .not-found-destinations {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 1.5rem;
+  }
+}
+@media (max-width: 400px) {
+  .not-found-actions {
+    column-gap: 1rem;
+  }
+  .not-found-actions .page-recovery-link {
+    font-size: 0.8125rem;
+  }
+  .not-found-actions .page-recovery-action-divider {
+    display: none;
   }
 }
 @media (max-height: 600px) {
+  /* Spend spare top space on the directory rows before introducing scrolling. */
   .page-state-shell--not-found .page-state-main {
     padding-block: 0.5rem;
   }
-  .not-found-hero,
-  .not-found-copy {
-    gap: clamp(0.375rem, 1dvh, 0.625rem);
-  }
-  .not-found-status {
-    font-size: clamp(2rem, 10dvh, 3.5rem);
-  }
-  .not-found-hero h1 {
-    font-size: clamp(1.375rem, 3.5vw, 1.75rem);
-  }
-  .not-found-description {
+  .not-found-eyebrow {
+    margin-bottom: 0.75rem;
     font-size: 0.8125rem;
   }
-  .not-found-actions a {
-    min-height: 2.25rem;
-    padding-block: 0.375rem;
+  .not-found-hero h1 {
+    font-size: clamp(1.6rem, 3.25vw, 2.25rem);
   }
-}
-@media (min-width: 640px) and (max-height: 600px) {
-  .not-found-hero {
-    grid-template-columns: auto minmax(0, 1fr);
-    align-items: center;
-    column-gap: clamp(1.25rem, 4vw, 3rem);
-    width: auto;
-  }
-  .not-found-copy {
-    justify-items: start;
-    text-align: left;
+  .not-found-description {
+    margin-top: 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.65;
   }
   .not-found-actions {
-    justify-content: start;
+    margin-top: 0.75rem;
+  }
+  .not-found-directory {
+    margin-top: 1.25rem;
+    padding-top: 0.875rem;
   }
 }
